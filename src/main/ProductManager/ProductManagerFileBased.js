@@ -10,19 +10,19 @@ export class ProductManagerFileBased {
     title,
     description,
     price,
-    thumbnail,
     code,
     stock,
+    status,
     category,
   }) => {
     if (
       !title ||
       !description ||
       !price ||
-      !thumbnail ||
       !code ||
       !stock ||
-      !category
+      !category ||
+      !status
     )
       throw new Error("Faltan parámetros");
   };
@@ -53,6 +53,7 @@ export class ProductManagerFileBased {
     price,
     code,
     stock,
+    status,
     category,
     thumbnails,
   }) {
@@ -65,6 +66,7 @@ export class ProductManagerFileBased {
         price,
         code,
         stock,
+        status,
         category,
         thumbnails,
       });
@@ -86,7 +88,7 @@ export class ProductManagerFileBased {
 
       await fs.writeFile(this.path, JSON.stringify(products), "utf-8");
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
