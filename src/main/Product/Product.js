@@ -6,6 +6,7 @@ export class Product {
     price,
     code,
     stock,
+    status,
     category,
     thumbnails,
   }) {
@@ -15,7 +16,7 @@ export class Product {
     this.price = price;
     this.code = code;
     this.stock = stock;
-    this.status = true;
+    this.status = status;
     this.category = category;
     this.thumbnails = thumbnails;
   }
