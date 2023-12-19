@@ -132,7 +132,7 @@ export class CartManagerFileBased {
 
   async assertProductIDIsValid(aProductID) {
     try {
-      productManager.getProductById(aProductID);
+      await productManager.getProductById(aProductID);
     } catch (error) {
       throw error;
     }

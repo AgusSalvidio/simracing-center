@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { cartManager } from "../main/ManagerSystem/ManagerSystem";
-i;
+import { cartManager } from "../main/ManagerSystem/ManagerSystem.js";
+
 const router = Router();
 
 router.post("/", async (req, res) => {
