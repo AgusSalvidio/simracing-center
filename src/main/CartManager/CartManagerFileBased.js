@@ -1,5 +1,6 @@
 import { Cart } from "../Cart/Cart.js";
 import { promises as fs } from "node:fs";
+import { productManager } from "../ManagerSystem/ManagerSystem.js";
 
 export class CartManagerFileBased {
   constructor(path) {
@@ -129,9 +130,18 @@ export class CartManagerFileBased {
     }
   }
 
+  async assertProductIDIsValid(aProductID) {
+    try {
+      productManager.getProductById(aProductID);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async addProduct(aProductID, aCartID) {
     try {
       this.assertSatisfiesAllProductRequiredParameters(aProductID);
+      await this.assertProductIDIsValid(aProductID);
       let products = await this.getProductsFrom(aCartID);
       let carts = await this.getCarts();
       const cartFilterCriteria = (cart) => cart.id === aCartID;
