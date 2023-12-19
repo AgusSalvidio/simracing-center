@@ -1,14 +1,11 @@
 import { Cart } from "../Cart/Cart.js";
 import { promises as fs } from "node:fs";
+import { productManager } from "../ManagerSystem/ManagerSystem.js";
 
 export class CartManagerFileBased {
   constructor(path) {
     this.path = path;
   }
-
-  assertSatisfiesAllCartRequiredParameters = ({ products }) => {
-    if (!products) throw new Error("Faltan parámetros");
-  };
 
   async nextSequentialNumber() {
     try {
@@ -19,7 +16,7 @@ export class CartManagerFileBased {
     }
   }
 
-  async initializeCartUsing({ products }) {
+  async initializeCartUsing(products) {
     try {
       const id = await this.nextSequentialNumber();
       return new Cart({
@@ -31,11 +28,9 @@ export class CartManagerFileBased {
     }
   }
 
-  async addCart(aPotentialCart) {
+  async addCart() {
     try {
-      this.assertSatisfiesAllCartRequiredParameters(aPotentialCart);
-
-      const cart = await this.initializeCartUsing(aPotentialCart);
+      const cart = await this.initializeCartUsing([]);
 
       const carts = await this.getCarts();
 
@@ -121,8 +116,8 @@ export class CartManagerFileBased {
     }
   }
 
-  assertSatisfiesAllProductRequiredParameters = ({ productID, quantity }) => {
-    if (!productID || !quantity) throw new Error("Faltan parámetros");
+  assertSatisfiesAllProductRequiredParameters = (productID) => {
+    if (!productID) throw new Error("Faltan parámetros");
   };
 
   async hasProductAlreadyBeenAdded(aProductID, aCartID) {
@@ -135,31 +130,38 @@ export class CartManagerFileBased {
     }
   }
 
-  async addProduct(aPotentialProduct, aCartID) {
+  async assertProductIDIsValid(aProductID) {
     try {
-      const { productID, quantity } = aPotentialProduct;
-      this.assertSatisfiesAllProductRequiredParameters(aPotentialProduct);
+      await productManager.getProductById(aProductID);
+    } catch (error) {
+      throw error;
+    }
+  }
 
+  async addProduct(aProductID, aCartID) {
+    try {
+      this.assertSatisfiesAllProductRequiredParameters(aProductID);
+      await this.assertProductIDIsValid(aProductID);
       let products = await this.getProductsFrom(aCartID);
       let carts = await this.getCarts();
       const cartFilterCriteria = (cart) => cart.id === aCartID;
       const productFilterCriteria = (product) =>
-        product.productID === productID;
+        product.productID === aProductID;
       let cartToUpdate = this.getCartFilteredBy(cartFilterCriteria, carts);
 
-      if (await this.hasProductAlreadyBeenAdded(productID, aCartID)) {
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
         let productToUpdate = this.getProductFilteredBy(
           productFilterCriteria,
           products
         );
         const index = products.indexOf(productToUpdate);
-        productToUpdate.quantity += quantity;
+        productToUpdate.quantity++;
 
         if (~index) {
           products[index] = productToUpdate;
         }
       } else {
-        products.push(aPotentialProduct);
+        products.push({ productID: aProductID, quantity: 1 });
       }
 
       const cartIndex = carts.indexOf(cartToUpdate);

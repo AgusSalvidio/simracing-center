@@ -18,7 +18,7 @@ export class Product {
     this.stock = stock;
     this.status = status;
     this.category = category;
-    this.thumbnails = thumbnails;
+    !thumbnails ? (this.thumbnails = []) : (this.thumbnails = thumbnails);
   }
   /*In here should be the assertion to generate the product based on the atributes, raising
       an instance creation failed error message, that the manager should handle. But to comply with

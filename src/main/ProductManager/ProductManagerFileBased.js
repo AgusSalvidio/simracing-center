@@ -12,18 +12,9 @@ export class ProductManagerFileBased {
     price,
     code,
     stock,
-    status,
     category,
   }) => {
-    if (
-      !title ||
-      !description ||
-      !price ||
-      !code ||
-      !stock ||
-      !category ||
-      !status
-    )
+    if (!title || !description || !price || !code || !stock || !category)
       throw new Error("Faltan parámetros");
   };
 
@@ -53,7 +44,6 @@ export class ProductManagerFileBased {
     price,
     code,
     stock,
-    status,
     category,
     thumbnails,
   }) {
@@ -66,7 +56,7 @@ export class ProductManagerFileBased {
         price,
         code,
         stock,
-        status,
+        status: true,
         category,
         thumbnails,
       });
