@@ -33,20 +33,23 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
-router.post("/", uploader.single("thumbnails"), async (req, res) => {
+router.post("/", uploader.array("thumbnails"), async (req, res) => {
   try {
     const potentialProduct = req.body;
-    if (req.file) {
-      /*Adapt filepath to relative path and not the absolute path, 
-      to avoid errors when loading. -asalvidio*/
-      const fullPath = req.file.path;
-      const imagesIndex = fullPath.indexOf("images");
-      if (imagesIndex !== -1) {
-        const relativePath = fullPath.substring(imagesIndex - 1); // The -1 is to delete the / before images -asalvidio
-        potentialProduct.thumbnail = relativePath;
-      } else {
-        console.log("Images directory not found");
-      }
+    if (req.files && req.files.length > 0) {
+      const images = req.files.map((file) => {
+        const fullPath = file.path;
+        const imagesIndex = fullPath.indexOf("images");
+        if (imagesIndex !== -1) {
+          const relativePath = fullPath.substring(imagesIndex - 1);
+          return relativePath;
+        } else {
+          console.log("Images directory not found");
+          return null;
+        }
+      });
+
+      potentialProduct.thumbnails = images.filter((image) => image !== null);
     }
 
     await productManager.addProduct(potentialProduct);

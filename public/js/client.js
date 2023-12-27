@@ -21,6 +21,10 @@ const registerNewProduct = () => {
               <input id="category" type="text" name="category" class="form-control" placeholder="Categoria">
             </div>
             <div class="col-md-6">
+              <label for="code" class="col-form-label">Código</label>
+              <input id="code" type="text" name="code" class="form-control" placeholder="Código">
+            </div>
+            <div class="col-md-6">
               <label for="price" class="col-form-label">Precio</label>
               <input id="price" type="text" name="price" class="form-control" placeholder="Precio">
             </div>
@@ -29,12 +33,8 @@ const registerNewProduct = () => {
               <input id="stock" type="text" name="stock" class="form-control" placeholder="Stock">
             </div>
             <div class="col-md-6">
-              <label for="code" class="col-form-label">Código</label>
-              <input id="code" type="text" name="code" class="form-control" placeholder="Código">
-            </div>
-            <div class="col-md-6">
               <label for="thumbnails" class="col-form-label">Imagenes</label>
-              <input id="thumbnails" name="thumbnails" type="file" class="form-control" placeholder="Seleccione imagenes">
+              <input id="thumbnails" name="thumbnails" type="file" multiple='multiple' accept='image/*' class="form-control" placeholder="Seleccione imagenes">
             </div>
           </div>   
         </div>
@@ -108,7 +108,7 @@ const refreshProductsTable = async (products) => {
         <td>${product.stock}</td>
         <td class="px-4">
         <a
-        onclick="showImageIdentifiedBy('${product.thumbnails}')"
+        onclick="showImageGalleryFor('${product.thumbnails}')"
               class="btn-sm clickable"
               ><i class="fa-regular fa-image"></i></a>
               </td>

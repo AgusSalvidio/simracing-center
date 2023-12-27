@@ -196,3 +196,21 @@ tr {
 .text-left {
   text-align: left;
 }
+
+.image-gallery-container {
+  width: auto !important;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.gallery-image {
+  width: 400px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 5px;
+}
