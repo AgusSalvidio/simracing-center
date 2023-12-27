@@ -6,7 +6,9 @@
     "price": 230,
     "code": "csmoza123",
     "stock": 5,
-    "thumbnail": "images/mozacsv2.png"
+    "status": true,
+    "category": "steering-wheel",
+    "thumbnails": []
   },
   {
     "id": 2,
@@ -15,6 +17,8 @@
     "price": 900,
     "code": "mercedezwheel",
     "stock": 1,
-    "thumbnail": "images/mercedezAMGGTwheel.png"
+    "status": true,
+    "category": "steering-wheel",
+    "thumbnails": []
   }
 ]
