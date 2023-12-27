@@ -5,9 +5,11 @@ import cartRouter from "./routers/carts.routers.js";
 import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
+import { Server as ServerIO } from "socket.io";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const URL = `http://localhost:${PORT}`;
 
 const configureApp = () => {
   app.use(express.json());
@@ -19,7 +21,12 @@ const configureApp = () => {
       extname: ".hbs",
       helpers: {
         json: (anObject) => {
-          return JSON.stringify(anObject);
+          /*When an array comes, the object is empty, so needs to be converted. -asalvidio*/
+          if (anObject == "") {
+            return [];
+          } else {
+            return JSON.stringify(anObject);
+          }
         },
         headMeta: () => {
           return configureTemplateCustomHelperFor("headMeta");
@@ -56,3 +63,39 @@ const initializeApp = () => {
 };
 
 initializeApp();
+
+const io = new ServerIO(httpServer);
+
+io.on("connection", (socket) => {
+  console.log("Client connected!");
+
+  socket.on("deleteProductEvent", (potentialProductIDToDelete) => {
+    fetch(URL + `/api/products/${parseInt(potentialProductIDToDelete)}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        fetch(URL + "/api/products/", {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((products) => {
+            socket.emit("updateProductTableEvent", products);
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((err) => console.log(err));
+  });
+  socket.on("addedProductEvent", (data) => {
+    console.log(data);
+    fetch(URL + "/api/products/", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((products) => {
+        socket.emit("updateProductTableEvent", products);
+      })
+      .catch((error) => console.log(error));
+  });
+});

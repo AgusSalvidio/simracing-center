@@ -1,10 +1,7 @@
 import { Router } from "express";
-import { ProductManagerFileBased } from "../main/ProductManager/ProductManagerFileBased.js";
+import { productManager } from "../main/ManagerSystem/ManagerSystem.js";
 
 const router = Router();
-
-const PRODUCTS_PATH = "./resources/Products.json";
-const productManager = new ProductManagerFileBased(PRODUCTS_PATH);
 
 router.get("/", async (req, res) => {
   try {
@@ -35,4 +32,4 @@ router.get("/realtimeproducts", async (req, res) => {
   }
 });
 
-export { router };
+export default router;
