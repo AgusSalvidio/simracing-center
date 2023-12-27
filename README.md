@@ -1,8 +1,12 @@
 # Simracing Center
 
-<img src="src/assets/logos/logo.png" alt="Logo" width="300" height="100">
+<img src="/public/assets/logo.png" alt="Logo" width="300" height="100">
 
 Simracing Center is an e-commerce project used for Coderhouse Backend course.
+
+## Installation 🔧
+
+To load the project on your local machine follow these [instructions](docs/how-to/how-to-load-on-local-machine.md).
 
 ## Quick links 🚀
 
