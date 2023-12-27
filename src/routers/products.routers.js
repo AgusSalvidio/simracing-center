@@ -32,9 +32,22 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", uploader.single("thumbnails"), async (req, res) => {
   try {
     const potentialProduct = req.body;
+    if (req.file) {
+      /*Adapt filepath to relative path and not the absolute path, 
+      to avoid errors when loading. -asalvidio*/
+      const fullPath = req.file.path;
+      const imagesIndex = fullPath.indexOf("images");
+      if (imagesIndex !== -1) {
+        const relativePath = fullPath.substring(imagesIndex - 1); // The -1 is to delete the / before images -asalvidio
+        potentialProduct.thumbnail = relativePath;
+      } else {
+        console.log("Images directory not found");
+      }
+    }
+
     await productManager.addProduct(potentialProduct);
     return res.status(201).send({
       status: "success",

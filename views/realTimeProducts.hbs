@@ -1,0 +1,59 @@
+<main>
+  <div class="d-flex justify-content-end p-2">
+    <legend class="">Administrar Productos</legend>
+    <a class="btn btn-md btn-custom" onclick="registerNewProduct()">
+      Agregar
+    </a>
+  </div>
+  <section>
+    <div class="px-1">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Código</th>
+                <th>Categoria</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Imagenes</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="products_tbody">
+              {{#each products}}
+                <tr>
+                  <td>{{this.title}}</td>
+                  <td>{{this.description}}</td>
+                  <td>{{this.code}}</td>
+                  <td>{{this.category}}</td>
+                  <td>{{this.price}}</td>
+                  <td>{{this.stock}}</td>
+                  <td class="px-4">
+                    <a
+                      onclick="showImageIdentifiedBy('{{this.thumbnails}}')"
+                      class="btn-sm clickable"
+                    ><i class="fa-regular fa-image"></i></a>
+                  </td>
+                  <td class="px-4">
+                    <a
+                      onclick="deleteProduct('{{this.id}}')"
+                      class="btn-sm clickable"
+                    ><i class="fa-solid fa-xmark" style="color:#b61212"></i></a>
+                  </td>
+                </tr>
+              {{else}}
+                <tr>
+                  <td colspan="8">No hay productos</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="js/client.js"></script>

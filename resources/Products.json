@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "Steering wheel CS V2 MOZA",
+    "description": "Volante CS V2 MOZA",
+    "price": 230,
+    "code": "csmoza123",
+    "stock": 5,
+    "thumbnail": "images/mozacsv2.png"
+  },
+  {
+    "id": 2,
+    "title": "Steering wheel Mercedes-AMG GT Edition",
+    "description": "Volante Mercedes-AMG GT Edition",
+    "price": 900,
+    "code": "mercedezwheel",
+    "stock": 1,
+    "thumbnail": "images/mercedezAMGGTwheel.png"
+  }
+]
