@@ -49,7 +49,7 @@ const registerNewProduct = () => {
       const formData = new FormData(document.getElementById("productForm"));
       if (formIsValid()) {
         try {
-          fetch("/", { method: "POST", body: formData })
+          fetch("/api/products/", { method: "POST", body: formData })
             .then((response) => {
               if (response.ok) {
                 return response.json();

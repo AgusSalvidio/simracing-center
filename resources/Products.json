@@ -8,7 +8,7 @@
     "stock": 5,
     "status": true,
     "category": "steering-wheel",
-    "thumbnails": []
+    "thumbnails": ["images/mozacsv2.png"]
   },
   {
     "id": 2,

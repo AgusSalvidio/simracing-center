@@ -21,7 +21,12 @@ const configureApp = () => {
       extname: ".hbs",
       helpers: {
         json: (anObject) => {
-          return JSON.stringify(anObject);
+          /*When an array comes, the object is empty, so needs to be converted. -asalvidio*/
+          if (anObject == "") {
+            return [];
+          } else {
+            return JSON.stringify(anObject);
+          }
         },
         headMeta: () => {
           return configureTemplateCustomHelperFor("headMeta");
