@@ -9,37 +9,38 @@ import { Server as ServerIO } from "socket.io";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const URL = `http://localhost:${PORT}`;
 
-const configureApp = () => {
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.static(__dirname + "/public"));
-  app.engine(
-    "hbs",
-    handlebars.engine({
-      extname: ".hbs",
-      helpers: {
-        json: (anObject) => {
-          /*When an array comes, the object is empty, so needs to be converted. -asalvidio*/
-          if (anObject == "") {
-            return [];
-          } else {
-            return JSON.stringify(anObject);
-          }
-        },
-        headMeta: () => {
-          return configureTemplateCustomHelperFor("headMeta");
-        },
-        scripts: () => {
-          return configureTemplateCustomHelperFor("scripts");
-        },
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
+app.engine(
+  "hbs",
+  handlebars.engine({
+    extname: ".hbs",
+    helpers: {
+      json: (anObject) => {
+        /*When an array comes, the object is empty, so needs to be converted. -asalvidio*/
+        if (anObject == "") {
+          return [];
+        } else {
+          return JSON.stringify(anObject);
+        }
       },
-    })
-  );
-  app.set("view engine", "hbs");
-  app.set("views", __dirname + "/views");
-};
+      headMeta: () => {
+        return configureTemplateCustomHelperFor("headMeta");
+      },
+      scripts: () => {
+        return configureTemplateCustomHelperFor("scripts");
+      },
+    },
+  })
+);
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/views");
+
+app.use("/", productViewRouter);
+app.use("/api/products", productRouter);
+app.use("/api/carts", cartRouter);
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
@@ -51,51 +52,10 @@ const configureTemplateCustomHelperFor = (aTemplateName) => {
   return fileContent;
 };
 
-const configureEndpoints = () => {
-  app.use("/", productViewRouter);
-  app.use("/api/products", productRouter);
-  app.use("/api/carts", cartRouter);
-};
-
-const initializeApp = () => {
-  configureApp();
-  configureEndpoints();
-};
-
-initializeApp();
-
 const io = new ServerIO(httpServer);
 
 io.on("connection", (socket) => {
   console.log("Client connected!");
-
-  socket.on("deleteProductEvent", (potentialProductIDToDelete) => {
-    fetch(URL + `/api/products/${parseInt(potentialProductIDToDelete)}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        fetch(URL + "/api/products/", {
-          method: "GET",
-        })
-          .then((response) => response.json())
-          .then((products) => {
-            socket.emit("updateProductTableEvent", products);
-          })
-          .catch((error) => console.log(error));
-      })
-      .catch((err) => console.log(err));
-  });
-  socket.on("addedProductEvent", (data) => {
-    console.log(data);
-    fetch(URL + "/api/products/", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((products) => {
-        socket.emit("updateProductTableEvent", products);
-      })
-      .catch((error) => console.log(error));
-  });
 });
+
+export { io };
