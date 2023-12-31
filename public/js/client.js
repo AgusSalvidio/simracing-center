@@ -45,21 +45,26 @@ const registerNewProduct = () => {
     cancelButtonText: "Cancelar",
     confirmButtonText: "Agregar",
     confirmButtonColor: "#b61212",
-    preConfirm: () => {
+    preConfirm: async () => {
       const formData = new FormData(document.getElementById("productForm"));
       if (formIsValid()) {
         try {
-          fetch("/api/products/", { method: "POST", body: formData })
-            .then((response) => {
-              if (response.ok) {
-                return response.json();
-              }
-              throw new Error("Error al agregar el producto");
-            })
-            .then((data) => {
-              socket.emit("addedProductEvent", data);
-            });
+          const response = await fetch("/api/products/", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) {
+            throw new Error("Error al agregar el producto");
+          }
+          Swal.fire({
+            title: "Se agregó el producto correctamente!",
+            icon: "success",
+            confirmButtonColor: "#b61212",
+          });
         } catch (error) {
+          Swal.showValidationMessage(
+            `<i class="fa fa-info-circle"></i> ${error}`
+          );
           console.log(error);
         }
       } else {
@@ -77,16 +82,27 @@ const deleteProduct = (aProductID) => {
     confirmButtonColor: "#b61212",
     confirmButtonText: "Eliminar",
     cancelButtonText: "Cancelar",
-  })
-    .then((result) => {
-      if (result.isConfirmed) {
-        socket.emit("deleteProductEvent", aProductID);
-        refreshProductsTable();
+    preConfirm: async () => {
+      try {
+        const response = await fetch(`/api/products/${parseInt(aProductID)}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error("Error al eliminar el producto");
+        }
+        Swal.fire({
+          title: "Se eliminó el producto correctamente!",
+          icon: "success",
+          confirmButtonColor: "#b61212",
+        });
+      } catch (error) {
+        Swal.showValidationMessage(
+          `<i class="fa fa-info-circle"></i> ${error}`
+        );
+        console.log(error);
       }
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
+    },
+  });
 };
 
 const refreshProductsTable = async (products) => {

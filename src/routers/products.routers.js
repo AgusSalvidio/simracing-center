@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { productManager } from "../main/ManagerSystem/ManagerSystem.js";
 import { uploader } from "../../utils.js";
+import { io } from "../app.js";
 
 const router = Router();
 
@@ -53,6 +54,11 @@ router.post("/", uploader.array("thumbnails"), async (req, res) => {
     }
 
     await productManager.addProduct(potentialProduct);
+
+    const updatedProducts = await productManager.getProducts();
+
+    io.emit("updateProductTableEvent", updatedProducts);
+
     return res.status(201).send({
       status: "success",
       description: "Se agregó correctamente el producto",
@@ -68,6 +74,11 @@ router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     await productManager.deleteProduct(parseInt(pid));
+
+    const updatedProducts = await productManager.getProducts();
+
+    io.emit("updateProductTableEvent", updatedProducts);
+
     return res.status(200).send({
       status: "success",
       description: `Se eliminó correctamente el product con ID ${pid}`,

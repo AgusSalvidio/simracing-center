@@ -68,34 +68,6 @@ const io = new ServerIO(httpServer);
 
 io.on("connection", (socket) => {
   console.log("Client connected!");
-
-  socket.on("deleteProductEvent", (potentialProductIDToDelete) => {
-    fetch(URL + `/api/products/${parseInt(potentialProductIDToDelete)}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        fetch(URL + "/api/products/", {
-          method: "GET",
-        })
-          .then((response) => response.json())
-          .then((products) => {
-            socket.emit("updateProductTableEvent", products);
-          })
-          .catch((error) => console.log(error));
-      })
-      .catch((err) => console.log(err));
-  });
-  socket.on("addedProductEvent", (data) => {
-    console.log(data);
-    fetch(URL + "/api/products/", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((products) => {
-        socket.emit("updateProductTableEvent", products);
-      })
-      .catch((error) => console.log(error));
-  });
 });
+
+export { io };
