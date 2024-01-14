@@ -1,4 +1,4 @@
-import { Cart } from "../Cart/Cart.js";
+import { Cart } from "../../../main/Cart/Cart.js";
 import { promises as fs } from "node:fs";
 import { productManager } from "../ManagerSystem/ManagerSystem.js";
 

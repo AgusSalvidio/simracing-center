@@ -1,4 +1,4 @@
-import { Product } from "../Product/Product.js";
+import { Product } from "../../../main/Product/Product.js";
 import { promises as fs } from "node:fs";
 
 export class ProductManagerFileBased {
