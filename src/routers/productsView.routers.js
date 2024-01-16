@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const router = Router();
 

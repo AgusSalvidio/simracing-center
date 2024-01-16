@@ -1,6 +1,7 @@
 import { Cart } from "../../../main/Cart/Cart.js";
 import cartModel from "../../models/cart.model.js";
 import { mongoose } from "mongoose";
+import { productManager } from "../ManagerSystem/ManagerSystem.js";
 
 export class CartManagerDBBased {
   async initializeCartUsing(products) {
@@ -97,7 +98,7 @@ export class CartManagerDBBased {
   async addProduct(aProductID, aCartID) {
     try {
       this.assertSatisfiesAllProductRequiredParameters(aProductID);
-      //await this.assertProductIDIsValid(aProductID);
+      await this.assertProductIDIsValid(aProductID);
 
       const cart = await this.getCartById(aCartID);
       let products = cart.products;
