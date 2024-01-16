@@ -1,6 +1,5 @@
 import { mongoose } from "mongoose";
 import { Product } from "../../../main/Product/Product.js";
-import { promises as fs } from "node:fs";
 import productModel from "../../models/product.model.js";
 
 export class ProductManagerDBBased {
@@ -68,7 +67,11 @@ export class ProductManagerDBBased {
 
   async getProducts() {
     try {
-      return await productModel.find({});
+      const potentialProducts = await productModel.find({});
+      const parsedProducts = potentialProducts.map(
+        (potentialProduct) => new Product(potentialProduct)
+      );
+      return parsedProducts;
     } catch (error) {
       console.error(error.message);
     }
@@ -107,7 +110,7 @@ export class ProductManagerDBBased {
     try {
       const productToDelete = await this.getProductById(anId);
       const result = await productModel.deleteOne({ _id: productToDelete.id });
-      if (result.deletedCount != 0) {
+      if (!result.deletedCount > 0) {
         throw new Error(`No se encontró ningún producto con el ID ${anId}`);
       }
     } catch (error) {
