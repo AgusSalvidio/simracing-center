@@ -6,9 +6,11 @@ import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
+import { connectDB } from "./config/config.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

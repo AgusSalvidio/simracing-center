@@ -84,7 +84,7 @@ const deleteProduct = (aProductID) => {
     cancelButtonText: "Cancelar",
     preConfirm: async () => {
       try {
-        const response = await fetch(`/api/products/${parseInt(aProductID)}`, {
+        const response = await fetch(`/api/products/${aProductID}`, {
           method: "DELETE",
         });
         if (!response.ok) {
@@ -108,7 +108,7 @@ const deleteProduct = (aProductID) => {
 const refreshProductsTable = async (products) => {
   let productsTableBody = document.getElementById("products_tbody");
   let content = ``;
-  if (products == []) {
+  if (products == [] || products == "") {
     content += `  <tr>
       <td colspan="8">No hay productos</td>
       </tr>`;

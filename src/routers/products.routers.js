@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { productManager } from "../main/ManagerSystem/ManagerSystem.js";
 import { uploader } from "../../utils.js";
 import { io } from "../app.js";
+import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const router = Router();
 
@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const foundProduct = await productManager.getProductById(parseInt(pid));
+    const foundProduct = await productManager.getProductById(pid);
     return res.status(200).send(foundProduct);
   } catch (error) {
     return res
@@ -73,7 +73,7 @@ router.post("/", uploader.array("thumbnails"), async (req, res) => {
 router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    await productManager.deleteProduct(parseInt(pid));
+    await productManager.deleteProduct(pid);
 
     const updatedProducts = await productManager.getProducts();
 
@@ -94,7 +94,7 @@ router.put("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
     const potentialProduct = req.body;
-    await productManager.updateProduct(parseInt(pid), potentialProduct);
+    await productManager.updateProduct(pid, potentialProduct);
     return res.status(200).send({
       status: "success",
       description: `Se actualizó correctamente el producto con ID ${pid}`,

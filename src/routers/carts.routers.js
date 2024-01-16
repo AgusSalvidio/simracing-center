@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { cartManager } from "../main/ManagerSystem/ManagerSystem.js";
-
+import { cartManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 const router = Router();
 
 router.post("/", async (req, res) => {
@@ -20,7 +19,7 @@ router.post("/", async (req, res) => {
 router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
-    await cartManager.addProduct(parseInt(pid), parseInt(cid));
+    await cartManager.addProduct(pid, cid);
     return res.status(201).send({
       status: "success",
       description: "Se agregó correctamente el producto al carrito",
@@ -35,7 +34,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
 router.get("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
-    const foundCart = await cartManager.getCartById(parseInt(cid));
+    const foundCart = await cartManager.getCartById(cid);
     return res.status(200).send(foundCart.products);
   } catch (error) {
     return res
