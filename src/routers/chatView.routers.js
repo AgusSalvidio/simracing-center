@@ -3,7 +3,7 @@ import { messageManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSyst
 
 const router = Router();
 
-router.get("/chat", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const messages = await messageManager.getMessagesSortedByTimestamp();
     res.status(200).render("chat", {

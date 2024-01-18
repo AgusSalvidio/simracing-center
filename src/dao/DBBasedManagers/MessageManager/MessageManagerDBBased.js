@@ -38,7 +38,9 @@ export class MessageManagerDBBased {
 
   async getMessages() {
     try {
-      return await messageModel.find({});
+      const messages = await messageModel.find({});
+      const parsedMessages = messages.map((message) => new Message(message));
+      return parsedMessages;
     } catch (error) {
       console.error(error.message);
     }
@@ -46,7 +48,13 @@ export class MessageManagerDBBased {
 
   async getMessagesSortedByTimestamp() {
     try {
-      return await this.getMessages().sort({ timestamp: 1 });
+      const messages = await this.getMessages();
+      const sortedMessages = messages.sort(
+        (message, anotherMessage) =>
+          message.timestamp - anotherMessage.timestamp
+      );
+      console.log("Los mensajes ordenados son: " + sortedMessages);
+      return sortedMessages;
     } catch (error) {
       console.error(error.message);
     }

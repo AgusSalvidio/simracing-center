@@ -1,0 +1,14 @@
+<div>
+  <h1>bienvenidos a socket</h1>
+</div>
+<div>
+  <input id="chatBox" type="text" />
+</div>
+<div id="messagesBox">
+  {{#each messages}}
+    <li>{{this.userEmail}} dice: {{this.message}}</li>
+  {{/each}}
+
+</div>
+
+<script src="/js/chat.js"></script>

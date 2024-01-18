@@ -2,11 +2,14 @@ import express from "express";
 import productRouter from "./routers/products.routers.js";
 import productViewRouter from "./routers/productsView.routers.js";
 import cartRouter from "./routers/carts.routers.js";
+import chatRouter from "./routers/chatView.routers.js";
 import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
 import { connectDB } from "./config/config.js";
+import messageModel from "./dao/models/message.model.js";
+import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -43,6 +46,7 @@ app.set("views", __dirname + "/views");
 app.use("/", productViewRouter);
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/chat", chatRouter);
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
@@ -58,6 +62,14 @@ const io = new ServerIO(httpServer);
 
 io.on("connection", (socket) => {
   console.log("Client connected!");
+
+  socket.on("addMessageEvent", async (data) => {
+    messageModel.create(data);
+
+    const messages = await messageManager.getMessagesSortedByTimestamp();
+
+    io.emit("updateMessagesBoxEvent", messages);
+  });
 });
 
 export { io };
