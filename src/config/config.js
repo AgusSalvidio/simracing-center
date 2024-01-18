@@ -1,6 +1,7 @@
 import { connect } from "mongoose";
 
-const DB_URI = "";
+const DB_URI =
+  "mongodb+srv://admin:admin@simracingcenter.vwo5g63.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
 const connectDB = async () => {
   try {
