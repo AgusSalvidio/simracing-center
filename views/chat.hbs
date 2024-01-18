@@ -1,14 +1,51 @@
-<div>
-  <h1>bienvenidos a socket</h1>
+<div class="container">
+  <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ibox chat-view">
+          <div class="ibox-title">
+            {{title}}
+          </div>
+          <div class="ibox-content">
+            <div class="row">
+              <div class="col-md-12">
+                <div id="messagesBox" class="chat-discussion">
+                  {{#each messages}}
+                    <div class="chat-message left">
+                      <div class="message">
+                        <small class="message-author">
+                          {{this.userEmail}}
+                        </small>
+                        <span class="message-date">
+                          {{formatDate this.timestamp}}
+                        </span>
+                        <span class="message-content">
+                          {{this.message}}
+                        </span>
+                      </div>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="chat-message-form">
+                  <div class="form-group">
+                    <textarea
+                      id="chatBox"
+                      class="form-control message-input"
+                      name="chatBox"
+                      placeholder="Ingresar mensaje, presionar enter para enviar"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<div>
-  <input id="chatBox" type="text" />
-</div>
-<div id="messagesBox">
-  {{#each messages}}
-    <li>{{this.userEmail}} dice: {{this.message}}</li>
-  {{/each}}
-
-</div>
-
 <script src="/js/chat.js"></script>

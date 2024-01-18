@@ -53,7 +53,6 @@ export class MessageManagerDBBased {
         (message, anotherMessage) =>
           message.timestamp - anotherMessage.timestamp
       );
-      console.log("Los mensajes ordenados son: " + sortedMessages);
       return sortedMessages;
     } catch (error) {
       console.error(error.message);

@@ -6,6 +6,8 @@ Swal.fire({
   title: "Identifícate",
   input: "text",
   text: "Ingresá el email para identificarte en el chat",
+  confirmButtonText: "Ingresar",
+  confirmButtonColor: "#b61212",
   inputValidator: (value) => {
     return !value && "Necesitas ingresar el email de usuario para continuar.";
   },
@@ -29,11 +31,28 @@ chatBox.addEventListener("keyup", (evt) => {
   }
 });
 
+const formatDate = (timestamp) => {
+  const date = new Date(parseInt(timestamp, 10));
+  return date.toLocaleString();
+};
+
 socket.on("updateMessagesBoxEvent", (data) => {
   let messagesBox = document.querySelector("#messagesBox");
   let messages = "";
   data.forEach((message) => {
-    messages += `<li>${message.userEmail} dice: ${message.message}</li>`;
+    messages += `<div class="chat-message left">
+    <div class="message">
+      <small class="message-author">
+      ${message.userEmail}
+      </small>
+      <span class="message-date">
+      ${formatDate(message.timestamp)}
+      </span>
+      <span class="message-content">
+      ${message.message}
+      </span>
+    </div>
+  </div>`;
   });
   messagesBox.innerHTML = messages;
 });

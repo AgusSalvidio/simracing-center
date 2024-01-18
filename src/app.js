@@ -31,6 +31,10 @@ app.engine(
           return JSON.stringify(anObject);
         }
       },
+      formatDate: (timestamp) => {
+        const date = new Date(parseInt(timestamp, 10));
+        return date.toLocaleString();
+      },
       headMeta: () => {
         return configureTemplateCustomHelperFor("headMeta");
       },
