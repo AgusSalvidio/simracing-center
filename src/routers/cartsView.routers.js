@@ -9,6 +9,7 @@ router.get("/:cid", async (req, res) => {
     const { products } = await cartManager.getCartById(cid);
     res.status(200).render("cart", {
       title: "Carrito",
+      cartID: cid,
       products: products,
       style: "../../css/index.css",
     });

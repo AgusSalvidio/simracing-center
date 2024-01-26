@@ -58,6 +58,11 @@ export class CartManagerDBBased {
       );
   }
 
+  parseProducts(aProductCollection) {
+    const products = aProductCollection.map((product) => product.product);
+    return productManager.parseProducts(products);
+  }
+
   async getCartById(anId) {
     try {
       await this.assertHasCarts();
@@ -150,7 +155,7 @@ export class CartManagerDBBased {
       if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
         const result = await cartModel.updateOne(
           { _id: aCartID },
-          { $pull: { products: { productID: aProductID } } }
+          { $pull: { products: { product: aProductID } } }
         );
         if (result.modifiedCount == 0) {
           throw new Error(`Hubo un error al borrar el producto`);
