@@ -62,7 +62,7 @@ export class CartManagerDBBased {
     try {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
-      const cart = await cartModel.findById(anId);
+      const cart = await cartModel.findOne({ _id: anId });
       if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
       return cart;
     } catch (error) {
@@ -132,7 +132,7 @@ export class CartManagerDBBased {
           products[index] = productToUpdate;
         }
       } else {
-        products.push({ productID: aProductID, quantity: 1 });
+        products.push({ product: aProductID, quantity: 1 });
       }
 
       await cartModel.findByIdAndUpdate(
