@@ -62,7 +62,7 @@ export class CartManagerDBBased {
     try {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
-      const cart = await cartModel.findOne({ _id: anId });
+      const cart = await cartModel.findOne({ _id: anId }).lean();
       if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
       return cart;
     } catch (error) {

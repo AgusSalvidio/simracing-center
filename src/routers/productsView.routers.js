@@ -9,11 +9,16 @@ router.get("/", async (req, res) => {
     res.status(200).render("index", {
       title: "Productos",
       products: products,
+      style: "index.css",
     });
   } catch (error) {
     return res
       .status(400)
-      .render("index", { title: "Productos", errorMessage: error.message });
+      .render("index", {
+        title: "Productos",
+        errorMessage: error.message,
+        style: "index.css",
+      });
   }
 });
 
@@ -23,11 +28,13 @@ router.get("/realtimeproducts", async (req, res) => {
     res.status(200).render("realTimeProducts", {
       title: "Productos en tiempo real",
       products: products,
+      style: "index.css",
     });
   } catch (error) {
     return res.status(400).render("index", {
       title: "Productos en tiempo real",
       errorMessage: error.message,
+      style: "index.css",
     });
   }
 });

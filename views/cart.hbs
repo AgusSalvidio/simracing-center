@@ -1,0 +1,32 @@
+<div class="container pt-4">
+  <div class="row no-gutters">
+    <div class="col-12 col-md-8">
+      <div class="row pb-2">
+        {{#each products}}
+          <div class="d-flex align-items-start col-12">
+            <img
+              src=""
+              class="img-thumbnail"
+            />
+            <div class="px-3 py-1">
+              <p>
+                <strong>{{this.product.title}}</strong>
+              </p>
+              <p>Cantidad: {{this.quantity}}</p>
+              <p>${{this.product.price}}</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-4 offset-md-4 py-3">
+            <button class="btn btn-custom shadow-0 me-1 w-100">Eliminar</button>
+          </div>
+          <hr />
+        {{/each}}
+      </div>
+      <div class="text-center">
+        <button class="btn btn-custom shadow-0 me-1 w-25">
+          Vaciar carrito
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

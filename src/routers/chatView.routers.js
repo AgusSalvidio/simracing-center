@@ -9,11 +9,13 @@ router.get("/", async (req, res) => {
     res.status(200).render("chat", {
       title: "Chat en vivo",
       messages: messages,
+      style: "index.css",
     });
   } catch (error) {
     return res.status(400).render("chat", {
       title: "Chat en vivo",
       errorMessage: error.message,
+      style: "index.css",
     });
   }
 });

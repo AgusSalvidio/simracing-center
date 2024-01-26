@@ -402,3 +402,22 @@ tr {
   width: 100%;
   font-size: 14px;
 }
+.img-thumbnail {
+  padding: 0.25rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  max-width: 20%;
+  height: auto;
+}
+
+.btn-custom {
+  color: #fff;
+  background-color: #b61212;
+  border-color: #b61212;
+}
+
+.btn-custom:hover {
+  color: #fff;
+  background-color: #cf2525;
+}

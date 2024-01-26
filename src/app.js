@@ -1,6 +1,7 @@
 import express from "express";
 import productRouter from "./routers/products.routers.js";
 import productViewRouter from "./routers/productsView.routers.js";
+import cartViewRouter from "./routers/cartsView.routers.js";
 import cartRouter from "./routers/carts.routers.js";
 import chatRouter from "./routers/chatView.routers.js";
 import __dirname from "../utils.js";
@@ -48,6 +49,7 @@ app.set("view engine", "hbs");
 app.set("views", __dirname + "/views");
 
 app.use("/", productViewRouter);
+app.use("/carts", cartViewRouter);
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/chat", chatRouter);
