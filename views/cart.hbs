@@ -4,10 +4,16 @@
       <div class="row pb-2">
         {{#each products}}
           <div class="d-flex align-items-start col-12">
-            <img
-              src=""
-              class="img-thumbnail"
-            />
+            {{#if this.product.thumbnails.length}}
+              <!--Check thumbnails has []-->
+              <img src="{{this.product.thumbnails.[0]}}" class="img-thumbnail" />
+            {{else}}
+              <img
+                src="https://www1.rims.org/eWeb/images/DEMO1/notavailable.jpg"
+                class="img-thumbnail"
+              />
+            {{/if}}
+
             <div class="px-3 py-1">
               <p>
                 <strong>{{this.product.title}}</strong>
