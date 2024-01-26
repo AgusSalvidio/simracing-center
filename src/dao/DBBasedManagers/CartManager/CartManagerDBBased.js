@@ -74,10 +74,14 @@ export class CartManagerDBBased {
     if (!productID) throw new Error("Faltan parámetros");
   };
 
-  async hasProductAlreadyBeenAdded(aProductID, products) {
+  async hasProductAlreadyBeenAdded(aProductID, aCartID) {
     try {
-      const sameProductID = (product) => product.productID === aProductID;
-      return products.some(sameProductID);
+      const cart = await cartModel.findOne({
+        _id: aCartID,
+        "products.productID": aProductID,
+      });
+
+      return !!cart;
     } catch (error) {
       throw error;
     }
@@ -95,8 +99,19 @@ export class CartManagerDBBased {
     return aProductCollection.find(aCriteria);
   }
 
+  async assertCartExists(aCartID) {
+    try {
+      const cart = await cartModel.findById({ _id: aCartID });
+      if (!cart)
+        throw new Error(`No se encuentra el carrito con ID ${aCartID}`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async addProduct(aProductID, aCartID) {
     try {
+      await this.assertCartExists(aCartID);
       this.assertSatisfiesAllProductRequiredParameters(aProductID);
       await this.assertProductIDIsValid(aProductID);
 
@@ -105,7 +120,7 @@ export class CartManagerDBBased {
       const productFilterCriteria = (product) =>
         product.productID === aProductID;
 
-      if (await this.hasProductAlreadyBeenAdded(aProductID, products)) {
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
         let productToUpdate = this.getProductFilteredBy(
           productFilterCriteria,
           products
@@ -124,6 +139,44 @@ export class CartManagerDBBased {
         { _id: aCartID },
         { products: products }
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteProductOn(aCartID, aProductID) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      await this.assertProductIDIsValid(aProductID);
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
+        const result = await cartModel.updateOne(
+          { _id: aCartID },
+          { $pull: { products: { productID: aProductID } } }
+        );
+        if (result.modifiedCount == 0) {
+          throw new Error(`Hubo un error al borrar el producto`);
+        }
+      } else {
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  async deleteAllProductsOn(aCartID) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      const result = await cartModel.updateOne(
+        { _id: aCartID },
+        { $set: { products: [] } }
+      );
+      if (result.modifiedCount == 0) {
+        throw new Error(`Hubo un error al borrar todos los productos`);
+      }
     } catch (error) {
       throw error;
     }

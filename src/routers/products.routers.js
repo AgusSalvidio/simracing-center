@@ -105,7 +105,7 @@ router.delete("/:pid", async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      payload: `Se eliminó correctamente el product con ID ${pid}`,
+      payload: `Se eliminó correctamente el producto con ID ${pid}`,
     });
   } catch (error) {
     return res.status(400).send({ status: "failed", payload: error.message });
