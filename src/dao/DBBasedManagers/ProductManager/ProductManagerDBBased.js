@@ -77,6 +77,22 @@ export class ProductManagerDBBased {
     }
   }
 
+  parseProducts(potentialProducts) {
+    const parsedProducts = potentialProducts.map(
+      (potentialProduct) => new Product(potentialProduct)
+    );
+    return parsedProducts;
+  }
+
+  async getProductsFilteredBy(queryParams) {
+    try {
+      const potentialProducts = await productModel.paginate({}, queryParams);
+      return potentialProducts;
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   async assertHasProducts() {
     try {
       const products = await productModel.findOne({});

@@ -7,18 +7,46 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const { limit } = req.query;
-    const products = await productManager.getProducts();
-    if (!limit) {
-      return res.status(200).send(products);
-    } else {
-      const filteredProducts = products.slice(0, limit);
-      return res.status(200).send(filteredProducts);
-    }
+    const {
+      limit: queryLimit = 10,
+      page: queryPage = 1,
+      sort: querySort,
+      query,
+    } = req.query;
+
+    const queryParams = {
+      limit: parseInt(queryLimit),
+      page: parseInt(queryPage),
+      lean: true,
+      ...(querySort && { sort: { price: querySort } }),
+      ...(query && { query }),
+    };
+
+    const {
+      docs,
+      totalPages,
+      prevPage,
+      nextPage,
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink,
+    } = await productManager.getProductsFilteredBy(queryParams);
+    return res.status(200).send({
+      status: "success",
+      payload: productManager.parseProducts(docs),
+      totalPages,
+      prevPage,
+      nextPage,
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink,
+    });
   } catch (error) {
-    return res
-      .status(400)
-      .send({ status: "failed", description: error.message });
+    return res.status(400).send({ status: "failed", payload: error.message });
   }
 });
 
@@ -28,9 +56,7 @@ router.get("/:pid", async (req, res) => {
     const foundProduct = await productManager.getProductById(pid);
     return res.status(200).send(foundProduct);
   } catch (error) {
-    return res
-      .status(400)
-      .send({ status: "failed", description: error.message });
+    return res.status(400).send({ status: "failed", payload: error.message });
   }
 });
 
@@ -61,12 +87,10 @@ router.post("/", uploader.array("thumbnails"), async (req, res) => {
 
     return res.status(201).send({
       status: "success",
-      description: "Se agregó correctamente el producto",
+      payload: "Se agregó correctamente el producto",
     });
   } catch (error) {
-    return res
-      .status(400)
-      .send({ status: "failed", description: error.message });
+    return res.status(400).send({ status: "failed", payload: error.message });
   }
 });
 
@@ -81,12 +105,10 @@ router.delete("/:pid", async (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      description: `Se eliminó correctamente el product con ID ${pid}`,
+      payload: `Se eliminó correctamente el product con ID ${pid}`,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .send({ status: "failed", description: error.message });
+    return res.status(400).send({ status: "failed", payload: error.message });
   }
 });
 
@@ -97,12 +119,10 @@ router.put("/:pid", async (req, res) => {
     await productManager.updateProduct(pid, potentialProduct);
     return res.status(200).send({
       status: "success",
-      description: `Se actualizó correctamente el producto con ID ${pid}`,
+      payload: `Se actualizó correctamente el producto con ID ${pid}`,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .send({ status: "failed", description: error.message });
+    return res.status(400).send({ status: "failed", payload: error.message });
   }
 });
 
