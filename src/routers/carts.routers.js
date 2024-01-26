@@ -65,4 +65,32 @@ router.delete("/:cid", async (req, res) => {
   }
 });
 
+router.put("/:cid", async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const potentialProducts = req.body;
+    await cartManager.updateCartWith(cid, potentialProducts);
+    return res.status(200).send({
+      status: "success",
+      payload: `Se actualizó correctamente el carrito con ID ${cid}`,
+    });
+  } catch (error) {
+    return res.status(400).send({ status: "failed", payload: error.message });
+  }
+});
+
+router.put("/:cid/products/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    await cartManager.updateProductQuantityIn(cid, pid, quantity);
+    return res.status(200).send({
+      status: "success",
+      payload: `Se actualizó correctamente la cantidad de productos con ID ${pid} carrito con ID ${cid}`,
+    });
+  } catch (error) {
+    return res.status(400).send({ status: "failed", payload: error.message });
+  }
+});
+
 export default router;

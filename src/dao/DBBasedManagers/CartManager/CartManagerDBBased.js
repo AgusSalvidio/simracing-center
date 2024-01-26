@@ -78,9 +78,8 @@ export class CartManagerDBBased {
     try {
       const cart = await cartModel.findOne({
         _id: aCartID,
-        "products.productID": aProductID,
+        "products.product": aProductID,
       });
-
       return !!cart;
     } catch (error) {
       throw error;
@@ -95,8 +94,22 @@ export class CartManagerDBBased {
     }
   }
 
-  getProductFilteredBy(aCriteria, aProductCollection) {
-    return aProductCollection.find(aCriteria);
+  async getProductByIdIn(aCartID, aProductID) {
+    try {
+      const foundProduct = await cartModel.findOne(
+        { _id: aCartID, "products.product": aProductID },
+        { "products.$": 1 }
+      );
+      if (foundProduct && foundProduct.products.length > 0) {
+        return foundProduct.products[0];
+      } else {
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async assertCartExists(aCartID) {
@@ -115,30 +128,15 @@ export class CartManagerDBBased {
       this.assertSatisfiesAllProductRequiredParameters(aProductID);
       await this.assertProductIDIsValid(aProductID);
 
-      const cart = await this.getCartById(aCartID);
-      let products = cart.products;
-      const productFilterCriteria = (product) =>
-        product.productID === aProductID;
-
       if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
-        let productToUpdate = this.getProductFilteredBy(
-          productFilterCriteria,
-          products
-        );
-        const index = products.indexOf(productToUpdate);
-        productToUpdate.quantity++;
-
-        if (~index) {
-          products[index] = productToUpdate;
-        }
+        const { quantity } = await this.getProductByIdIn(aCartID, aProductID);
+        await this.updateProductQuantityIn(aCartID, aProductID, quantity + 1);
       } else {
-        products.push({ product: aProductID, quantity: 1 });
+        await cartModel.updateOne(
+          { _id: aCartID },
+          { $push: { products: { product: aProductID, quantity: 1 } } }
+        );
       }
-
-      await cartModel.findByIdAndUpdate(
-        { _id: aCartID },
-        { products: products }
-      );
     } catch (error) {
       throw error;
     }
@@ -176,6 +174,48 @@ export class CartManagerDBBased {
       );
       if (result.modifiedCount == 0) {
         throw new Error(`Hubo un error al borrar todos los productos`);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCartWith(aCartID, potentialProducts) {
+    try {
+      const { products } = potentialProducts;
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      const result = await cartModel.updateOne(
+        { _id: aCartID },
+        { $set: { products: products } }
+      );
+      if (result.modifiedCount == 0) {
+        throw new Error(`Hubo un error al actualizar el carrito`);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProductQuantityIn(aCartID, aProductID, potentialQuantity) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      await this.assertProductIDIsValid(aProductID);
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
+        const result = await cartModel.updateOne(
+          { _id: aCartID, "products.product": aProductID },
+          { $set: { "products.$.quantity": potentialQuantity } }
+        );
+        if (result.modifiedCount == 0) {
+          throw new Error(
+            `Hubo un error al actualizar la cantidad del producto`
+          );
+        }
+      } else {
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
       }
     } catch (error) {
       throw error;
