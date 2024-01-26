@@ -62,7 +62,7 @@ export class CartManagerDBBased {
     try {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
-      const cart = await cartModel.findById(anId);
+      const cart = await cartModel.findOne({ _id: anId });
       if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
       return cart;
     } catch (error) {
@@ -74,10 +74,13 @@ export class CartManagerDBBased {
     if (!productID) throw new Error("Faltan parámetros");
   };
 
-  async hasProductAlreadyBeenAdded(aProductID, products) {
+  async hasProductAlreadyBeenAdded(aProductID, aCartID) {
     try {
-      const sameProductID = (product) => product.productID === aProductID;
-      return products.some(sameProductID);
+      const cart = await cartModel.findOne({
+        _id: aCartID,
+        "products.product": aProductID,
+      });
+      return !!cart;
     } catch (error) {
       throw error;
     }
@@ -91,39 +94,129 @@ export class CartManagerDBBased {
     }
   }
 
-  getProductFilteredBy(aCriteria, aProductCollection) {
-    return aProductCollection.find(aCriteria);
+  async getProductByIdIn(aCartID, aProductID) {
+    try {
+      const foundProduct = await cartModel.findOne(
+        { _id: aCartID, "products.product": aProductID },
+        { "products.$": 1 }
+      );
+      if (foundProduct && foundProduct.products.length > 0) {
+        return foundProduct.products[0];
+      } else {
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async assertCartExists(aCartID) {
+    try {
+      const cart = await cartModel.findById({ _id: aCartID });
+      if (!cart)
+        throw new Error(`No se encuentra el carrito con ID ${aCartID}`);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async addProduct(aProductID, aCartID) {
     try {
+      await this.assertCartExists(aCartID);
       this.assertSatisfiesAllProductRequiredParameters(aProductID);
       await this.assertProductIDIsValid(aProductID);
 
-      const cart = await this.getCartById(aCartID);
-      let products = cart.products;
-      const productFilterCriteria = (product) =>
-        product.productID === aProductID;
-
-      if (await this.hasProductAlreadyBeenAdded(aProductID, products)) {
-        let productToUpdate = this.getProductFilteredBy(
-          productFilterCriteria,
-          products
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
+        const { quantity } = await this.getProductByIdIn(aCartID, aProductID);
+        await this.updateProductQuantityIn(aCartID, aProductID, quantity + 1);
+      } else {
+        await cartModel.updateOne(
+          { _id: aCartID },
+          { $push: { products: { product: aProductID, quantity: 1 } } }
         );
-        const index = products.indexOf(productToUpdate);
-        productToUpdate.quantity++;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 
-        if (~index) {
-          products[index] = productToUpdate;
+  async deleteProductOn(aCartID, aProductID) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      await this.assertProductIDIsValid(aProductID);
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
+        const result = await cartModel.updateOne(
+          { _id: aCartID },
+          { $pull: { products: { productID: aProductID } } }
+        );
+        if (result.modifiedCount == 0) {
+          throw new Error(`Hubo un error al borrar el producto`);
         }
       } else {
-        products.push({ productID: aProductID, quantity: 1 });
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
       }
-
-      await cartModel.findByIdAndUpdate(
+    } catch (error) {
+      throw error;
+    }
+  }
+  async deleteAllProductsOn(aCartID) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      const result = await cartModel.updateOne(
         { _id: aCartID },
-        { products: products }
+        { $set: { products: [] } }
       );
+      if (result.modifiedCount == 0) {
+        throw new Error(`Hubo un error al borrar todos los productos`);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCartWith(aCartID, potentialProducts) {
+    try {
+      const { products } = potentialProducts;
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      const result = await cartModel.updateOne(
+        { _id: aCartID },
+        { $set: { products: products } }
+      );
+      if (result.modifiedCount == 0) {
+        throw new Error(`Hubo un error al actualizar el carrito`);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProductQuantityIn(aCartID, aProductID, potentialQuantity) {
+    try {
+      this.assertCartIdIsValid(aCartID);
+      await this.assertCartExists(aCartID);
+      await this.assertProductIDIsValid(aProductID);
+      if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
+        const result = await cartModel.updateOne(
+          { _id: aCartID, "products.product": aProductID },
+          { $set: { "products.$.quantity": potentialQuantity } }
+        );
+        if (result.modifiedCount == 0) {
+          throw new Error(
+            `Hubo un error al actualizar la cantidad del producto`
+          );
+        }
+      } else {
+        throw new Error(
+          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
+        );
+      }
     } catch (error) {
       throw error;
     }
