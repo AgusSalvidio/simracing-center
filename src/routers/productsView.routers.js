@@ -51,11 +51,19 @@ router.get("/products", async (req, res) => {
       page: parseInt(pageQuery),
       lean: true,
       ...(sortQuery && { sort: { price: sortQuery } }),
-      ...(query && { query }),
     };
 
+    let searchQuery = {};
+
+    if (query) {
+      const [field, value] = query.split(":");
+      if (field && value) {
+        searchQuery = { [field]: value };
+      }
+    }
+
     const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, page } =
-      await productManager.getProductsFilteredBy(queryParams);
+      await productManager.getProductsFilteredBy(searchQuery, queryParams);
 
     const products = productManager.parseProducts(docs);
 

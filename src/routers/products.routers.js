@@ -19,9 +19,16 @@ router.get("/", async (req, res) => {
       page: parseInt(pageQuery),
       lean: true,
       ...(sortQuery && { sort: { price: sortQuery } }),
-      ...(query && { query }),
     };
 
+    let searchQuery = {};
+
+    if (query) {
+      const [field, value] = query.split(":");
+      if (field && value) {
+        searchQuery = { [field]: value };
+      }
+    }
     const {
       docs,
       totalPages,
@@ -32,7 +39,7 @@ router.get("/", async (req, res) => {
       hasNextPage,
       prevLink,
       nextLink,
-    } = await productManager.getProductsFilteredBy(queryParams);
+    } = await productManager.getProductsFilteredBy(searchQuery, queryParams);
     return res.status(200).send({
       status: "success",
       payload: productManager.parseProducts(docs),

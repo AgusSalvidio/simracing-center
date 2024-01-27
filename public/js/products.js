@@ -3,7 +3,7 @@ let currentCartID = sessionStorage.getItem("currentCartID");
 if (!currentCartID) {
   Swal.fire({
     title: "Bienvenido a productos!",
-    text: `Se creará un nuevo carrito que se guardará en el localStorage! En él, podrás agregar los productos.`,
+    text: `Se creará un nuevo carrito que se guardará en el sessionStorage! En él, podrás agregar los productos.`,
     icon: "info",
     confirmButtonColor: "#b61212",
     preConfirm: async () => {
