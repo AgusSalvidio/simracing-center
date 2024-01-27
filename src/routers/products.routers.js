@@ -8,20 +8,27 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const {
-      limit: queryLimit = 10,
-      page: queryPage = 1,
-      sort: querySort,
+      limit: limitQuery = 10,
+      page: pageQuery = 1,
+      sort: sortQuery,
       query,
     } = req.query;
 
     const queryParams = {
-      limit: parseInt(queryLimit),
-      page: parseInt(queryPage),
+      limit: parseInt(limitQuery),
+      page: parseInt(pageQuery),
       lean: true,
-      ...(querySort && { sort: { price: querySort } }),
-      ...(query && { query }),
+      ...(sortQuery && { sort: { price: sortQuery } }),
     };
 
+    let searchQuery = {};
+
+    if (query) {
+      const [field, value] = query.split(":");
+      if (field && value) {
+        searchQuery = { [field]: value };
+      }
+    }
     const {
       docs,
       totalPages,
@@ -32,7 +39,7 @@ router.get("/", async (req, res) => {
       hasNextPage,
       prevLink,
       nextLink,
-    } = await productManager.getProductsFilteredBy(queryParams);
+    } = await productManager.getProductsFilteredBy(searchQuery, queryParams);
     return res.status(200).send({
       status: "success",
       payload: productManager.parseProducts(docs),

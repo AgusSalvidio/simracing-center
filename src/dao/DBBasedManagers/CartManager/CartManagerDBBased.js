@@ -18,7 +18,7 @@ export class CartManagerDBBased {
   async addCart() {
     try {
       const cart = await this.initializeCartUsing([]);
-      cartModel.create(cart);
+      return cartModel.create(cart);
     } catch (error) {
       throw error;
     }
@@ -58,11 +58,16 @@ export class CartManagerDBBased {
       );
   }
 
+  parseProducts(aProductCollection) {
+    const products = aProductCollection.map((product) => product.product);
+    return productManager.parseProducts(products);
+  }
+
   async getCartById(anId) {
     try {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
-      const cart = await cartModel.findOne({ _id: anId });
+      const cart = await cartModel.findOne({ _id: anId }).lean();
       if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
       return cart;
     } catch (error) {
@@ -150,7 +155,7 @@ export class CartManagerDBBased {
       if (await this.hasProductAlreadyBeenAdded(aProductID, aCartID)) {
         const result = await cartModel.updateOne(
           { _id: aCartID },
-          { $pull: { products: { productID: aProductID } } }
+          { $pull: { products: { product: aProductID } } }
         );
         if (result.modifiedCount == 0) {
           throw new Error(`Hubo un error al borrar el producto`);
