@@ -4,10 +4,11 @@ const router = Router();
 
 router.post("/", async (req, res) => {
   try {
-    await cartManager.addCart();
+    const { _id: id } = await cartManager.addCart();
     return res.status(201).send({
       status: "success",
       payload: "Se agregó correctamente el carrito",
+      cartID: id.toString(),
     });
   } catch (error) {
     return res.status(400).send({ status: "failed", payload: error.message });

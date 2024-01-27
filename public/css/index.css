@@ -421,3 +421,17 @@ tr {
   color: #fff;
   background-color: #cf2525;
 }
+
+.item-card {
+  height: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.item-card-text {
+  overflow: hidden;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}

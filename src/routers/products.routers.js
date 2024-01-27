@@ -8,17 +8,17 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const {
-      limit: queryLimit = 10,
-      page: queryPage = 1,
-      sort: querySort,
+      limit: limitQuery = 10,
+      page: pageQuery = 1,
+      sort: sortQuery,
       query,
     } = req.query;
 
     const queryParams = {
-      limit: parseInt(queryLimit),
-      page: parseInt(queryPage),
+      limit: parseInt(limitQuery),
+      page: parseInt(pageQuery),
       lean: true,
-      ...(querySort && { sort: { price: querySort } }),
+      ...(sortQuery && { sort: { price: sortQuery } }),
       ...(query && { query }),
     };
 

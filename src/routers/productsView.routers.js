@@ -12,13 +12,11 @@ router.get("/", async (req, res) => {
       style: "index.css",
     });
   } catch (error) {
-    return res
-      .status(400)
-      .render("index", {
-        title: "Productos",
-        errorMessage: error.message,
-        style: "index.css",
-      });
+    return res.status(400).render("index", {
+      title: "Productos",
+      errorMessage: error.message,
+      style: "index.css",
+    });
   }
 });
 
@@ -33,6 +31,47 @@ router.get("/realtimeproducts", async (req, res) => {
   } catch (error) {
     return res.status(400).render("index", {
       title: "Productos en tiempo real",
+      errorMessage: error.message,
+      style: "index.css",
+    });
+  }
+});
+
+router.get("/products", async (req, res) => {
+  try {
+    const {
+      limit: limitQuery = 12,
+      page: pageQuery = 1,
+      sort: sortQuery,
+      query,
+    } = req.query;
+
+    const queryParams = {
+      limit: parseInt(limitQuery),
+      page: parseInt(pageQuery),
+      lean: true,
+      ...(sortQuery && { sort: { price: sortQuery } }),
+      ...(query && { query }),
+    };
+
+    const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, page } =
+      await productManager.getProductsFilteredBy(queryParams);
+
+    const products = productManager.parseProducts(docs);
+
+    res.status(200).render("products", {
+      title: "Productos",
+      products: products,
+      hasPrevPage,
+      hasNextPage,
+      prevPage,
+      nextPage,
+      page,
+      style: "index.css",
+    });
+  } catch (error) {
+    return res.status(400).render("products", {
+      title: "Productos",
       errorMessage: error.message,
       style: "index.css",
     });

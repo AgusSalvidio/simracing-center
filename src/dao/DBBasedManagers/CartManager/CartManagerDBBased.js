@@ -18,7 +18,7 @@ export class CartManagerDBBased {
   async addCart() {
     try {
       const cart = await this.initializeCartUsing([]);
-      cartModel.create(cart);
+      return cartModel.create(cart);
     } catch (error) {
       throw error;
     }
