@@ -1,0 +1,70 @@
+<section class="vh-100" style="background-color: #ddd;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+          <form id="registerForm" enctype="multipart/form-data">
+            <div class="card-body p-5">
+              <h3 class="pb-3 text-center">Registrarse</h3>
+              <div class="row text-left">
+                <div class="col-md-6">
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="firstName">Nombre</label>
+                    <input
+                      name="firstName"
+                      id="firstName"
+                      class="form-control form-control-lg"
+                      placeholder="Nombre"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="lastName">Apellido</label>
+                    <input
+                      name="lastName"
+                      id="lastName"
+                      class="form-control form-control-lg"
+                      placeholder="Apellido"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="email">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      class="form-control form-control-lg"
+                      placeholder="Email"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="password">Contraseña</label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      class="form-control form-control-lg"
+                      placeholder="Contraseña"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="text-center"><button
+                  class="btn btn-custom btn-lg w-100"
+                  onclick="register()"
+                >Registrarse</button></div>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="js/auth.js"></script>
