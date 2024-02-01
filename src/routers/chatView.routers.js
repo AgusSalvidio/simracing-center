@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { messageManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { auth } from "../middleware/authentication.middleware.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const messages = await messageManager.getMessagesSortedByTimestamp();
     res.status(200).render("chat", {

@@ -14,7 +14,6 @@ import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import { FileStore } from "session-file-store";
 import MongoStore from "connect-mongo";
 
 const app = express();

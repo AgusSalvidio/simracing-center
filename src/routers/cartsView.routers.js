@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { cartManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { auth } from "../middleware/authentication.middleware.js";
 
 const router = Router();
 
-router.get("/:cid", async (req, res) => {
+router.get("/:cid", auth, async (req, res) => {
   try {
     const { cid } = req.params;
     const { products } = await cartManager.getCartById(cid);

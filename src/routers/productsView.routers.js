@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { auth } from "../middleware/authentication.middleware.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const products = await productManager.getProducts();
     res.status(200).render("index", {
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/realtimeproducts", async (req, res) => {
+router.get("/realtimeproducts", auth, async (req, res) => {
   try {
     const products = await productManager.getProducts();
     res.status(200).render("realTimeProducts", {
@@ -37,7 +38,7 @@ router.get("/realtimeproducts", async (req, res) => {
   }
 });
 
-router.get("/products", async (req, res) => {
+router.get("/products", auth, async (req, res) => {
   try {
     const {
       limit: limitQuery = 12,
@@ -88,8 +89,8 @@ router.get("/products", async (req, res) => {
 
 router.get("/login", async (req, res) => {
   try {
-    if (req.session?.id) {
-      return res.redirect(200, "/products");
+    if (req.session?.user) {
+      res.redirect(200, "/products");
     }
     return res.status(200).render("login", {
       title: "Inicio de Sesión",
@@ -106,8 +107,8 @@ router.get("/login", async (req, res) => {
 
 router.get("/register", async (req, res) => {
   try {
-    if (req.session?.id) {
-      return res.redirect(200, "/products");
+    if (req.session?.user) {
+      res.redirect(200, "/products");
     }
     return res.status(200).render("register", {
       title: "Registrate",
