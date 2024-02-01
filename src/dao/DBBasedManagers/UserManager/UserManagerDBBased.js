@@ -86,4 +86,18 @@ export class UserManagerDBBased {
       throw error;
     }
   }
+
+  async getUserByCredentials(anEmail, aPassword) {
+    try {
+      await this.assertHasUsers();
+      const user = await userModel
+        .findOne({ email: anEmail, password: aPassword })
+        .lean();
+      if (!user)
+        throw new Error(`No se encuentra el usuario con email ${anEmail}`);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

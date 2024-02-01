@@ -86,4 +86,40 @@ router.get("/products", async (req, res) => {
   }
 });
 
+router.get("/login", async (req, res) => {
+  try {
+    if (req.session?.id) {
+      return res.redirect(200, "/products");
+    }
+    return res.status(200).render("login", {
+      title: "Inicio de Sesión",
+      style: "index.css",
+    });
+  } catch (error) {
+    return res.status(400).render("login", {
+      title: "Inicio de Sesión",
+      errorMessage: error.message,
+      style: "index.css",
+    });
+  }
+});
+
+router.get("/register", async (req, res) => {
+  try {
+    if (req.session?.id) {
+      return res.redirect(200, "/products");
+    }
+    return res.status(200).render("register", {
+      title: "Registrate",
+      style: "index.css",
+    });
+  } catch (error) {
+    return res.status(400).render("register", {
+      title: "Registrate",
+      errorMessage: error.message,
+      style: "index.css",
+    });
+  }
+});
+
 export default router;

@@ -4,15 +4,18 @@ import productViewRouter from "./routers/productsView.routers.js";
 import cartViewRouter from "./routers/cartsView.routers.js";
 import cartRouter from "./routers/carts.routers.js";
 import chatRouter from "./routers/chatView.routers.js";
+import authRouter from "./routers/auth.routers.js";
 import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
-import { connectDB } from "./config/config.js";
+import { connectDB, DB_URI } from "./config/config.js";
 import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import { FileStore } from "session-file-store";
+import MongoStore from "connect-mongo";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -24,6 +27,11 @@ app.use(express.static(__dirname + "/public"));
 app.use(cookieParser("ultraSecretCookieSign"));
 app.use(
   session({
+    storage: MongoStore.create({
+      mongoUrl: DB_URI,
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 15000,
+    }),
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,
@@ -61,6 +69,7 @@ app.set("views", __dirname + "/views");
 
 app.use("/", productViewRouter);
 app.use("/carts", cartViewRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/chat", chatRouter);
