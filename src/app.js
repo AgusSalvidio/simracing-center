@@ -11,6 +11,8 @@ import { Server as ServerIO } from "socket.io";
 import { connectDB } from "./config/config.js";
 import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import cookieParser from "cookie-parser";
+import session from "express-session";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -19,6 +21,15 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(cookieParser("ultraSecretCookieSign"));
+app.use(
+  session({
+    secret: "secretCoder",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
 app.engine(
   "hbs",
   handlebars.engine({
