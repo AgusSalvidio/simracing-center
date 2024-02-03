@@ -26,7 +26,8 @@ export class UserManagerDBBased {
   async addUser(aPotentialUser) {
     try {
       this.assertSatisfiesAllUserRequiredParameters(aPotentialUser);
-      if (!this.hasUserAlreadyBeenAdded(aPotentialUser)) {
+
+      if (!(await this.hasUserAlreadyBeenAdded(aPotentialUser))) {
         const user = await this.initializeUser(aPotentialUser);
         return userModel.create(user);
       } else {
@@ -57,6 +58,7 @@ export class UserManagerDBBased {
   }
 
   assertUserIdIsValid(anId) {
+    console.log(anId);
     if (!mongoose.Types.ObjectId.isValid(anId))
       throw new Error(
         `El formato del ID ${anId} no cumple con el formato de UUID`

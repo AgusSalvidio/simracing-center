@@ -10,11 +10,13 @@ router.get("/", auth, async (req, res) => {
     res.status(200).render("index", {
       title: "Productos",
       products: products,
+      session: req.session?.user,
       style: "index.css",
     });
   } catch (error) {
     return res.status(400).render("index", {
       title: "Productos",
+      session: req.session?.user,
       errorMessage: error.message,
       style: "index.css",
     });
@@ -26,12 +28,14 @@ router.get("/realtimeproducts", auth, async (req, res) => {
     const products = await productManager.getProducts();
     res.status(200).render("realTimeProducts", {
       title: "Productos en tiempo real",
+      session: req.session?.user,
       products: products,
       style: "index.css",
     });
   } catch (error) {
     return res.status(400).render("index", {
       title: "Productos en tiempo real",
+      session: req.session?.user,
       errorMessage: error.message,
       style: "index.css",
     });
@@ -71,6 +75,7 @@ router.get("/products", auth, async (req, res) => {
     res.status(200).render("products", {
       title: "Productos",
       products: products,
+      session: req.session?.user,
       hasPrevPage,
       hasNextPage,
       prevPage,
@@ -81,6 +86,7 @@ router.get("/products", auth, async (req, res) => {
   } catch (error) {
     return res.status(400).render("products", {
       title: "Productos",
+      session: req.session?.user,
       errorMessage: error.message,
       style: "index.css",
     });

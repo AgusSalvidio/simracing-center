@@ -3,7 +3,12 @@
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5">
         <div class="card shadow-2-strong" style="border-radius: 1rem;">
-          <form id="registerForm" enctype="multipart/form-data">
+          <form
+            id="authForm"
+            name="registerForm"
+            action="/api/auth/register"
+            method="post"
+          >
             <div class="card-body p-5">
               <h3 class="pb-3 text-center">Registrarse</h3>
               <div class="row text-left">
@@ -56,7 +61,7 @@
               </div>
               <div class="text-center"><button
                   class="btn btn-custom btn-lg w-100"
-                  onclick="register()"
+                  type="submit"
                 >Registrarse</button></div>
             </div>
 

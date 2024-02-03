@@ -10,6 +10,7 @@ router.get("/:cid", auth, async (req, res) => {
     const { products } = await cartManager.getCartById(cid);
     res.status(200).render("cart", {
       title: "Carrito",
+      session: req.session?.user,
       cartID: cid,
       products: products,
       style: "../../css/index.css",
@@ -17,6 +18,7 @@ router.get("/:cid", auth, async (req, res) => {
   } catch (error) {
     return res.status(400).render("cart", {
       title: "Carrito",
+      session: req.session?.user,
       errorMessage: error.message,
       style: "../../css/index.css",
     });

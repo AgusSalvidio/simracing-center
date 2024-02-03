@@ -6,6 +6,12 @@
     <link rel="icon" href="icons/icon.png" sizes="32x32" />
     <title>{{title}}</title>
   </head>
+  <header>
+    {{#if (shouldRenderNavbar title)}}
+      {{{navBar}}}
+    {{/if}}
+
+  </header>
   <body>
     {{{scripts}}}
     {{{body}}}

@@ -20,8 +20,7 @@ router.get("/logout", (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (email === ADMIN_EMAIL || password === ADMIN_PASS) {
+    if (email == ADMIN_EMAIL || password == ADMIN_PASS) {
       req.session.user = { id: "111", email: ADMIN_EMAIL, role: ADMIN_ROLE };
       return res
         .status(200)

@@ -54,6 +54,13 @@ app.engine(
         const date = new Date(parseInt(timestamp, 10));
         return date.toLocaleString();
       },
+      shouldRenderNavbar: (routeName) => {
+        const restrictedRoutes = ["Inicio de Sesión", "Registrate"];
+        return !restrictedRoutes.includes(routeName);
+      },
+      navBar: () => {
+        return configureTemplateCustomHelperFor("navBar");
+      },
       headMeta: () => {
         return configureTemplateCustomHelperFor("headMeta");
       },

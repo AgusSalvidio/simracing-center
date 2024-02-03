@@ -1,35 +1,62 @@
+const parseFromDataToObject = (formData) => {
+  const formDataObject = {};
+  formData.forEach((value, key) => {
+    formDataObject[key] = value;
+  });
+
+  return formDataObject;
+};
+
 const login = async () => {
-  const formData = new FormData(document.getElementById("loginForm"));
+  const formData = new FormData(authForm);
   if (loginFormIsValid()) {
     try {
-      const response = await fetch("/api/auth/login/", {
+      const parsedFormData = parseFromDataToObject(formData);
+      const response = await fetch("/api/auth/login", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(parsedFormData),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       });
       if (!response.ok) {
-        throw new Error("Error al loguearse");
+        const parsedResponse = await response.json();
+        throw new Error(parsedResponse.payload);
       }
-      location.href("/products");
+      //window.location.href = "/login";
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        text: `Error al iniciar sesión: ${error.message}`,
+        icon: "warning",
+        confirmButtonColor: "#b61212",
+      });
     }
   }
 };
 
 const register = async () => {
-  const formData = new FormData(document.getElementById("registerForm"));
+  const formData = new FormData(authForm);
   if (registerFormIsValid()) {
     try {
-      const response = await fetch("/api/auth/register/", {
+      const parsedFormData = parseFromDataToObject(formData);
+      const response = await fetch("/api/auth/register", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(parsedFormData),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       });
       if (!response.ok) {
-        throw new Error("Error al registrarse");
+        const parsedResponse = await response.json();
+        throw new Error(parsedResponse.payload);
       }
-      location.href("/login");
+      //window.location.href = "/register";
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        text: `Error al registrarse: ${error.message}`,
+        icon: "warning",
+        confirmButtonColor: "#b61212",
+      });
     }
   }
 };
@@ -40,7 +67,7 @@ const formIsValidFor = (aFormId, aRuleCollection) => {
 };
 
 const loginFormIsValid = () => {
-  const formID = "#loginForm";
+  const formID = "#authForm";
   const rules = {
     rules: {
       email: {
@@ -62,7 +89,7 @@ const loginFormIsValid = () => {
 };
 
 const registerFormIsValid = () => {
-  const formID = "#registerForm";
+  const formID = "#authForm";
   const rules = {
     rules: {
       firstName: {
@@ -90,3 +117,14 @@ const registerFormIsValid = () => {
   };
   return formIsValidFor(formID, rules);
 };
+
+const authForm = document.getElementById("authForm");
+
+authForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  try {
+    authForm.name == "loginForm" ? login() : register();
+  } catch (error) {
+    throw error;
+  }
+});

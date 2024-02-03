@@ -3,7 +3,12 @@
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5">
         <div class="card shadow-2-strong" style="border-radius: 1rem;">
-          <form id="loginForm" enctype="multipart/form-data">
+          <form
+            id="authForm"
+            name="loginForm"
+            action="/api/auth/login"
+            method="post"
+          >
             <div class="card-body p-5">
               <h3 class="mb-5 text-center">Iniciar Sesión</h3>
               <div class="form-outline mb-4">
@@ -29,7 +34,7 @@
               </div>
               <div class="text-center"><button
                   class="btn btn-custom btn-lg w-100"
-                  onclick="login()"
+                  type="submit"
                 >Ingresar</button></div>
               <div class="text-center py-2">
                 <p>¿No estás registrado? <a href="/register">Registrate</a></p>
