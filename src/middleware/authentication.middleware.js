@@ -11,10 +11,8 @@ function auth(req, res, next) {
       (req.session?.user.email === ADMIN_EMAIL &&
         req.session?.user.role === ADMIN_ROLE) ||
       userManager.getUserById(req.session?.user.id)
-    ) {
-      console.log(req.session?.user);
+    )
       return next();
-    }
   } catch (error) {
     return res.redirect("/login");
   }

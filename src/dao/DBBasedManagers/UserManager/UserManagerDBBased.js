@@ -58,7 +58,6 @@ export class UserManagerDBBased {
   }
 
   assertUserIdIsValid(anId) {
-    console.log(anId);
     if (!mongoose.Types.ObjectId.isValid(anId))
       throw new Error(
         `El formato del ID ${anId} no cumple con el formato de UUID`

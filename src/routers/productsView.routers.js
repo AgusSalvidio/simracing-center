@@ -96,7 +96,7 @@ router.get("/products", auth, async (req, res) => {
 router.get("/login", async (req, res) => {
   try {
     if (req.session?.user) {
-      res.redirect(200, "/products");
+      return res.redirect("/products");
     }
     return res.status(200).render("login", {
       title: "Inicio de Sesión",

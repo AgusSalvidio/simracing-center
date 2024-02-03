@@ -23,7 +23,19 @@ const login = async () => {
         const parsedResponse = await response.json();
         throw new Error(parsedResponse.payload);
       }
-      //window.location.href = "/login";
+      Swal.fire({
+        text: "Inicio de sesión exitoso!",
+        icon: "success",
+        confirmButtonColor: "#b61212",
+        confirmButtonText: "OK",
+        preConfirm: async () => {
+          try {
+            window.location.href = "/products";
+          } catch (error) {
+            throw error;
+          }
+        },
+      });
     } catch (error) {
       Swal.fire({
         text: `Error al iniciar sesión: ${error.message}`,
@@ -50,7 +62,19 @@ const register = async () => {
         const parsedResponse = await response.json();
         throw new Error(parsedResponse.payload);
       }
-      //window.location.href = "/register";
+      Swal.fire({
+        text: "Registro exitoso!",
+        icon: "success",
+        confirmButtonColor: "#b61212",
+        confirmButtonText: "OK",
+        preConfirm: async () => {
+          try {
+            window.location.href = "/login";
+          } catch (error) {
+            throw error;
+          }
+        },
+      });
     } catch (error) {
       Swal.fire({
         text: `Error al registrarse: ${error.message}`,
@@ -119,6 +143,15 @@ const registerFormIsValid = () => {
 };
 
 const authForm = document.getElementById("authForm");
+
+authForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  try {
+    authForm.name == "loginForm" ? login() : register();
+  } catch (error) {
+    throw error;
+  }
+});
 
 authForm.addEventListener("submit", function (event) {
   event.preventDefault();
