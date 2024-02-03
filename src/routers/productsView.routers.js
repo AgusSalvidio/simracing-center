@@ -75,7 +75,7 @@ router.get("/products", auth, async (req, res) => {
     res.status(200).render("products", {
       title: "Productos",
       products: products,
-      session: req.session?.user,
+      user: req.session?.user,
       hasPrevPage,
       hasNextPage,
       prevPage,
@@ -86,7 +86,7 @@ router.get("/products", auth, async (req, res) => {
   } catch (error) {
     return res.status(400).render("products", {
       title: "Productos",
-      session: req.session?.user,
+      user: req.session?.user,
       errorMessage: error.message,
       style: "index.css",
     });
