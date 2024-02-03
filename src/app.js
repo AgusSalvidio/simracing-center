@@ -12,9 +12,9 @@ import { Server as ServerIO } from "socket.io";
 import { connectDB, DB_URI } from "./config/config.js";
 import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
-import FileStore from "session-file-store";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import FileStore from "session-file-store";
 import MongoStore from "connect-mongo";
 
 const app = express();
@@ -25,10 +25,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(cookieParser("ultraSecretCookieSign"));
-const fileStore = FileStore(session);
 app.use(
   session({
-    storage: new fileStore({ path: "./sessions", ttl: 1500, retries: 0 }),
+    store: MongoStore.create({
+      mongoUrl: DB_URI,
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 1500,
+    }),
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,

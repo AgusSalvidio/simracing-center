@@ -6,7 +6,6 @@ const ADMIN_PASS = "adminCod3r123";
 
 function auth(req, res, next) {
   try {
-    console.log(req.session?.user);
     if (
       (req.session?.user.email === ADMIN_EMAIL &&
         req.session?.user.role === ADMIN_ROLE) ||
