@@ -99,4 +99,11 @@ export class UserManagerDBBased {
       throw error;
     }
   }
+
+  parseUsers(potentialUsers) {
+    const parsedUsers = potentialUsers.map(
+      (potentialUser) => new User(potentialUser)
+    );
+    return parsedUsers;
+  }
 }
