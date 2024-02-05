@@ -113,4 +113,23 @@ router.get("/registerFail", async (req, res) => {
     .send({ status: "failed", payload: req.flash("error") });
 });
 
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] }),
+  async (req, res) => {}
+);
+
+router.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/loginFail" }),
+  async (req, res) => {
+    req.session.user = {
+      id: req.user._id,
+      email: req.user.email,
+      role: "User",
+    };
+    res.redirect("/products");
+  }
+);
+
 export default router;

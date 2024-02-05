@@ -8,8 +8,13 @@ import {
 import { createHash, isValidPassword } from "../../utils.js";
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { User } from "../main/User/User.js";
+import GithubStrategy from "passport-github2";
 
 const LocalStrategy = localPassport.Strategy;
+
+const CLIENT_ID = "Iv1.5a192012b4f78ec8";
+const CLIENT_SECRET = "ccb18c268d22a019402c1f276d6481dfd5c93978";
+const CALLBACK_URL = "http://localhost:8080/api/auth/githubcallback";
 
 const ADMIN_USER = {
   _id: "11a111aa111111111aa11aaa",
@@ -71,6 +76,45 @@ const initializePassport = () => {
           return done(null, user);
         } catch (error) {
           return done(null, false, req.flash("error", error.message));
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "github",
+    new GithubStrategy(
+      {
+        clientID: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        callbackURL: CALLBACK_URL,
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          try {
+            let user = await userManager.getUserByCredentials(
+              profile._json.email
+            );
+            return done(null, user);
+          } catch (error) {
+            if (
+              error.message ==
+              `No se encuentra el usuario con email ${profile._json.email}`
+            ) {
+              const newUser = {
+                firstName: profile._json.name,
+                lastName: profile._json.name,
+                email: profile._json.email,
+                password: "",
+              };
+              const addedUser = await userManager.addUser(newUser);
+              return done(null, addedUser);
+            } else {
+              throw error;
+            }
+          }
+        } catch (error) {
+          return done(error);
         }
       }
     )

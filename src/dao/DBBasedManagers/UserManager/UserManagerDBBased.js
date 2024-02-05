@@ -18,9 +18,8 @@ export class UserManagerDBBased {
     }
   }
   assertSatisfiesAllUserRequiredParameters = (aPotentialUser) => {
-    const { firstName, lastName, email, password } = aPotentialUser;
-    if (!firstName || !lastName || !email || !password)
-      throw new Error("Faltan parámetros");
+    const { firstName, lastName, email } = aPotentialUser;
+    if (!firstName || !lastName || !email) throw new Error("Faltan parámetros");
   };
 
   async addUser(aPotentialUser) {
@@ -66,7 +65,6 @@ export class UserManagerDBBased {
 
   async getUserById(anId) {
     try {
-      await this.assertHasUsers();
       this.assertUserIdIsValid(anId);
       const user = await userModel.findOne({ _id: anId }).lean();
       if (!user) throw new Error(`No se encuentra el usuario con ID ${anId}`);
@@ -90,7 +88,6 @@ export class UserManagerDBBased {
 
   async getUserByCredentials(anEmail) {
     try {
-      await this.assertHasUsers();
       const user = await userModel.findOne({ email: anEmail }).lean();
       if (!user)
         throw new Error(`No se encuentra el usuario con email ${anEmail}`);
