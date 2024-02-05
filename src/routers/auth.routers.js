@@ -5,6 +5,7 @@ import {
   ADMIN_PASS,
   ADMIN_ROLE,
 } from "../middleware/authentication.middleware.js";
+import { createHash, isValidPassword } from "../../utils.js";
 const router = Router();
 
 router.get("/logout", (req, res) => {
@@ -27,13 +28,19 @@ router.post("/login", async (req, res) => {
         .send({ status: "success", payload: "Login Successful" });
     }
 
-    const user = await userManager.getUserByCredentials(email, password);
+    const user = await userManager.getUserByCredentials(email);
 
-    req.session.user = { id: user._id, email: user.email, role: "User" };
+    if (isValidPassword(password, user.password)) {
+      req.session.user = { id: user._id, email: user.email, role: "User" };
 
-    return res
-      .status(200)
-      .send({ status: "success", payload: "Login Successful" });
+      return res
+        .status(200)
+        .send({ status: "success", payload: "Login Successful" });
+    } else {
+      return res
+        .status(401)
+        .send({ status: "failed", payload: "Contraseña incorrecta" });
+    }
   } catch (error) {
     return res.status(400).send({ status: "failed", payload: error.message });
   }
@@ -47,9 +54,8 @@ router.post("/register", async (req, res) => {
       firstName,
       lastName,
       email,
-      password,
+      password: createHash(password),
     };
-
     const registeredUser = await userManager.addUser(potentialUser);
     return res.status(200).send({ status: "success", payload: registeredUser });
   } catch (error) {

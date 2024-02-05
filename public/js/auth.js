@@ -152,12 +152,3 @@ authForm.addEventListener("submit", function (event) {
     throw error;
   }
 });
-
-authForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-  try {
-    authForm.name == "loginForm" ? login() : register();
-  } catch (error) {
-    throw error;
-  }
-});
