@@ -12,8 +12,9 @@ import GithubStrategy from "passport-github2";
 
 const LocalStrategy = localPassport.Strategy;
 
-const CLIENT_ID = "Iv1.5a192012b4f78ec8";
-const CLIENT_SECRET = "ccb18c268d22a019402c1f276d6481dfd5c93978";
+//Complete with your Github credentials
+const CLIENT_ID = "";
+const CLIENT_SECRET = "";
 const CALLBACK_URL = "http://localhost:8080/api/auth/githubcallback";
 
 const ADMIN_USER = {
