@@ -448,3 +448,17 @@ tr {
   letter-spacing: 0.05rem;
   padding: 0.75rem 1rem;
 }
+
+.btn-github {
+  background: #3b3b3b;
+  margin-top: 0.8em;
+  color: #ffffff;
+}
+.btn-github:hover {
+  color: #fff;
+  background-color: #6b6767;
+}
+
+.fa-github {
+  color: #ffffff;
+}

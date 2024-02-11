@@ -1,8 +1,8 @@
-<section class="vh-100" style="background-color: #ddd;">
+<section class="vh-100" style="background-color: #ddd">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+        <div class="card shadow-2-strong" style="border-radius: 1rem">
           <form
             id="authForm"
             name="loginForm"
@@ -32,17 +32,26 @@
                   placeholder="Contraseña"
                 />
               </div>
-              <div class="text-center"><button
-                  class="btn btn-custom btn-lg w-100"
-                  type="submit"
-                >Ingresar</button></div>
-              <div class="text-center py-2">
+              <div class="text-center">
+                <button class="btn btn-custom btn-lg w-100" type="submit">
+                  Ingresar
+                </button>
+              </div>
+              <div class="text-center pt-4">
+                <span> O Inicia Sesión Con </span>
+              </div>
+              <div class="text-center">
+                <a class="btn btn-github btn-lg w-100" href="/api/auth/github">
+                  <i
+                    class="fa-brands fa-github"
+                    aria-hidden="true"
+                  ></i>Github</a>
+              </div>
+              <div class="text-center pt-3">
                 <p>¿No estás registrado? <a href="/register">Registrate</a></p>
               </div>
             </div>
-
           </form>
-
         </div>
       </div>
     </div>
