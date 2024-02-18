@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { messageManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
-import { auth } from "../middleware/authentication.middleware.js";
 import { passportCall } from "../middleware/passportCall.js";
 
 const router = Router();
