@@ -1,10 +1,5 @@
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASS,
-  ADMIN_ROLE,
-} from "../middleware/authentication.middleware.js";
 import GithubStrategy from "passport-github2";
 import { PRIVATE_KEY } from "../../utils/jwt.js";
 
@@ -12,14 +7,6 @@ import { PRIVATE_KEY } from "../../utils/jwt.js";
 const CLIENT_ID = "";
 const CLIENT_SECRET = "";
 const CALLBACK_URL = "http://localhost:8080/api/auth/githubcallback";
-
-const ADMIN_USER = {
-  _id: "11a111aa111111111aa11aaa",
-  firstName: ADMIN_ROLE,
-  lastName: ADMIN_ROLE,
-  email: ADMIN_EMAIL,
-  password: ADMIN_PASS,
-};
 
 const JWTStrategy = Strategy;
 const ExtractJWT = ExtractJwt;

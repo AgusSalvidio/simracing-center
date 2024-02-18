@@ -12,13 +12,27 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  age: {
+    type: Number,
+    required: true,
+  },
+  role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
+  cart: {
+    type: Schema.Types.ObjectId,
+    ref: "carts",
+  },
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
   },
+});
+
+userSchema.pre("find", function () {
+  this.populate("cart");
 });
 
 userSchema.plugin(mongoosePaginate);

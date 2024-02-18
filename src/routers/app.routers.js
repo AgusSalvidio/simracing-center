@@ -15,7 +15,14 @@ router.use("/api/products", productRouter);
 router.use("/api/carts", cartRouter);
 router.use("/chat", chatRouter);
 router.get("*", (req, res) => {
-  res.status(404).send("Page not found");
+  return res.status(404).render("authFail", {
+    title: "Error",
+    errorMessage: {
+      status: "error",
+      payload: "Página no encontrada",
+    },
+    style: "index.css",
+  });
 });
 
 export default router;

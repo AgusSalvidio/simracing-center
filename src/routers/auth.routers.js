@@ -41,11 +41,12 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, age, email, password } = req.body;
   try {
     const potentialUser = {
       firstName,
       lastName,
+      age,
       email,
       password: createHash(password),
     };

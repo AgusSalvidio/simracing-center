@@ -122,6 +122,10 @@ const registerFormIsValid = () => {
       lastName: {
         required: true,
       },
+      age: {
+        required: true,
+        digits: true,
+      },
       email: {
         required: true,
       },
@@ -132,6 +136,7 @@ const registerFormIsValid = () => {
     messages: {
       firstName: { required: "Campo requerido." },
       lastName: { required: "Campo requerido." },
+      age: { required: "Campo requerido.", digits: "Ingrese una edad válida." },
       email: {
         required: "Campo requerido.",
         email: "Ingresar un email válido",

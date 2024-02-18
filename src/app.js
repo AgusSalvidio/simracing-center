@@ -58,11 +58,7 @@ app.engine(
         return date.toLocaleString();
       },
       shouldRenderNavbar: (routeName) => {
-        const restrictedRoutes = [
-          "Inicio de Sesión",
-          "Registrate",
-          "Fallo en la autenticación",
-        ];
+        const restrictedRoutes = ["Inicio de Sesión", "Registrate", "Error"];
         return !restrictedRoutes.includes(routeName);
       },
       navBar: () => {
