@@ -1,10 +1,10 @@
 import { Router } from "express";
-import productRouter from "./routers/products.routers.js";
-import productViewRouter from "./routers/productsView.routers.js";
-import cartViewRouter from "./routers/cartsView.routers.js";
-import cartRouter from "./routers/carts.routers.js";
-import chatRouter from "./routers/chatView.routers.js";
-import authRouter from "./routers/auth.routers.js";
+import productRouter from "./products.routers.js";
+import productViewRouter from "./productsView.routers.js";
+import cartViewRouter from "./cartsView.routers.js";
+import cartRouter from "./carts.routers.js";
+import chatRouter from "./chatView.routers.js";
+import authRouter from "./auth.routers.js";
 
 const router = Router();
 

@@ -7,6 +7,8 @@ import {
 } from "../middleware/authentication.middleware.js";
 import { passportCall } from "../middleware/passportCall.js";
 import { authorization } from "../middleware/authorization.middleware.js";
+import { createHash, isValidPassword } from "../../utils/bcrypt.js";
+import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const router = Router();
 
