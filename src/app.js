@@ -4,7 +4,7 @@ import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
-import { connectDB, DB_URI } from "./config/config.js";
+import { config, connectDB } from "./config/config.js";
 import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import cookieParser from "cookie-parser";
@@ -16,7 +16,9 @@ import { initializePassport } from "./config/passport.config.js";
 import flash from "express-flash";
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = config.PORT;
+const DB_URI = config.DB_URI;
+
 connectDB();
 
 app.use(express.json());

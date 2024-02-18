@@ -1,12 +1,12 @@
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import GithubStrategy from "passport-github2";
-import { PRIVATE_KEY } from "../../utils/jwt.js";
+import { config } from "./config.js";
 
-//Complete with your Github credentials
-const CLIENT_ID = "";
-const CLIENT_SECRET = "";
-const CALLBACK_URL = "http://localhost:8080/api/auth/githubcallback";
+const CLIENT_ID = config.CLIENT_ID;
+const CLIENT_SECRET = config.CLIENT_SECRET;
+const CALLBACK_URL = config.CALLBACK_URL;
+const JWT_SECRET_KEY = config.JWT_SECRET_KEY;
 
 const JWTStrategy = Strategy;
 const ExtractJWT = ExtractJwt;
@@ -25,7 +25,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: PRIVATE_KEY,
+        secretOrKey: JWT_SECRET_KEY,
       },
       async (jwt_payload, done) => {
         try {
