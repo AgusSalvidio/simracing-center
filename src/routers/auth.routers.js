@@ -5,7 +5,6 @@ import {
   ADMIN_PASS,
   ADMIN_ROLE,
 } from "../middleware/authentication.middleware.js";
-import { authToken } from "../../utils/jwt.js";
 import { passportCall } from "../middleware/passportCall.js";
 import { authorization } from "../middleware/authorization.middleware.js";
 
