@@ -5,7 +5,7 @@ import {
   ADMIN_PASS,
   ADMIN_ROLE,
 } from "../middleware/authentication.middleware.js";
-import { createHash, isValidPassword } from "../../utils.js";
+import { createHash, isValidPassword } from "../../utils/utils.js";
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { User } from "../main/User/User.js";
 import GithubStrategy from "passport-github2";

@@ -5,7 +5,7 @@ import cartViewRouter from "./routers/cartsView.routers.js";
 import cartRouter from "./routers/carts.routers.js";
 import chatRouter from "./routers/chatView.routers.js";
 import authRouter from "./routers/auth.routers.js";
-import __dirname from "../utils.js";
+import __dirname from "../utils/utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";

@@ -5,6 +5,8 @@ import {
   ADMIN_PASS,
   ADMIN_ROLE,
 } from "../middleware/authentication.middleware.js";
+import { authToken } from "../../utils/jwt.js";
+
 const router = Router();
 
 router.get("/logout", (req, res) => {
@@ -16,51 +18,6 @@ router.get("/logout", (req, res) => {
       .send({ status: "success", payload: "Logout Successful" });
   });
 });
-
-// router.post("/login", async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     if (email == ADMIN_EMAIL || password == ADMIN_PASS) {
-//       req.session.user = { id: "111", email: ADMIN_EMAIL, role: ADMIN_ROLE };
-//       return res
-//         .status(200)
-//         .send({ status: "success", payload: "Login Successful" });
-//     }
-
-//     const user = await userManager.getUserByCredentials(email);
-
-//     if (isValidPassword(password, user.password)) {
-//       req.session.user = { id: user._id, email: user.email, role: "User" };
-
-//       return res
-//         .status(200)
-//         .send({ status: "success", payload: "Login Successful" });
-//     } else {
-//       return res
-//         .status(401)
-//         .send({ status: "failed", payload: "Contraseña incorrecta" });
-//     }
-//   } catch (error) {
-//     return res.status(400).send({ status: "failed", payload: error.message });
-//   }
-// });
-
-// router.post("/register", async (req, res) => {
-//   try {
-//     const { firstName, lastName, email, password } = req.body;
-
-//     const potentialUser = {
-//       firstName,
-//       lastName,
-//       email,
-//       password: createHash(password),
-//     };
-//     const registeredUser = await userManager.addUser(potentialUser);
-//     return res.status(200).send({ status: "success", payload: registeredUser });
-//   } catch (error) {
-//     return res.status(400).send({ status: "failed", payload: error.message });
-//   }
-// });
 
 router.post(
   "/login",
@@ -131,5 +88,9 @@ router.get(
     res.redirect("/products");
   }
 );
+
+router.get("/current", authToken, async (req, res) => {
+  res.send({ status: "success", payload: req.user });
+});
 
 export default router;
