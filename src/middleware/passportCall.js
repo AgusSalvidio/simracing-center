@@ -4,12 +4,16 @@ const passportCall = (strategy) => {
   return async (req, res, next) => {
     // done(null, jwt_payload, info -> passport) - done(null, false, {message: 'User not found'})
     passport.authenticate(strategy, function (err, user, info) {
-      console.log(user);
+      console.log("El user es", user);
       if (err) return next(err);
       if (!user)
-        return res.status(401).send({
-          status: "error",
-          payload: info.message ? info.message : info.toString(),
+        return res.status(401).render("authFail", {
+          title: "Fallo en la autenticación",
+          errorMessage: {
+            status: "error",
+            payload: info.message ? info.message : info.toString(),
+          },
+          style: "index.css",
         });
       req.user = user;
       next();

@@ -1,14 +1,9 @@
 import { Router } from "express";
-import passport from "passport";
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASS,
-  ADMIN_ROLE,
-} from "../middleware/authentication.middleware.js";
 import { passportCall } from "../middleware/passportCall.js";
 import { authorization } from "../middleware/authorization.middleware.js";
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { generateToken } from "../../utils/jwt.js";
 
 const router = Router();
 
@@ -21,10 +16,6 @@ router.get("/logout", (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
-  if (email == ADMIN_EMAIL && passport == ADMIN_PASS) {
-    //TODO
-  }
 
   const user = await userManager.getUserByCredentials(email);
 
@@ -68,18 +59,6 @@ router.post("/register", async (req, res) => {
     throw error;
   }
 });
-
-/*router.get("/loginFail", async (req, res) => {
-  return res
-    .status(400)
-    .send({ status: "failed", payload: req.flash("error") });
-});*/
-
-/*router.get("/registerFail", async (req, res) => {
-  return res
-    .status(400)
-    .send({ status: "failed", payload: req.flash("error") });
-});*/
 
 /*router.get(
   "/github",

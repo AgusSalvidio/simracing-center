@@ -1,5 +1,5 @@
 import passport from "passport";
-import passportJWT from "passport-jwt";
+import { Strategy, ExtractJwt } from "passport-jwt";
 import {
   ADMIN_EMAIL,
   ADMIN_PASS,
@@ -21,8 +21,8 @@ const ADMIN_USER = {
   password: ADMIN_PASS,
 };
 
-const JWTStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
+const JWTStrategy = Strategy;
+const ExtractJWT = ExtractJwt;
 
 const cookieExtractor = (req) => {
   let token = null;
@@ -42,6 +42,7 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
+          console.log(jwt_payload);
           return done(null, jwt_payload);
         } catch (error) {
           return done(error);

@@ -1,6 +1,6 @@
 import express from "express";
 import appRouter from "./routers/app.routers.js";
-import __dirname from "../utils/utils.js";
+import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
@@ -58,7 +58,11 @@ app.engine(
         return date.toLocaleString();
       },
       shouldRenderNavbar: (routeName) => {
-        const restrictedRoutes = ["Inicio de Sesión", "Registrate"];
+        const restrictedRoutes = [
+          "Inicio de Sesión",
+          "Registrate",
+          "Fallo en la autenticación",
+        ];
         return !restrictedRoutes.includes(routeName);
       },
       navBar: () => {
