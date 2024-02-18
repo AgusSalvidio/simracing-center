@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { auth } from "../middleware/authentication.middleware.js";
+import { passportCall } from "../middleware/passportCall.js";
 
 const router = Router();
 
-router.get("/", auth, async (req, res) => {
+router.get("/", passportCall("jwt"), async (req, res) => {
   try {
     const products = await productManager.getProducts();
     res.status(200).render("index", {
@@ -23,7 +24,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/realtimeproducts", auth, async (req, res) => {
+router.get("/realtimeproducts", passportCall("jwt"), async (req, res) => {
   try {
     const products = await productManager.getProducts();
     res.status(200).render("realTimeProducts", {
@@ -42,7 +43,7 @@ router.get("/realtimeproducts", auth, async (req, res) => {
   }
 });
 
-router.get("/products", auth, async (req, res) => {
+router.get("/products", passportCall("jwt"), async (req, res) => {
   try {
     const {
       limit: limitQuery = 12,

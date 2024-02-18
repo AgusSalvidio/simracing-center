@@ -1,7 +1,7 @@
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const ADMIN_EMAIL = "adminCoder@coder.com";
-const ADMIN_ROLE = "Admin";
+const ADMIN_ROLE = "ADMIN";
 const ADMIN_PASS = "adminCod3r123";
 
 function auth(req, res, next) {

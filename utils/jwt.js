@@ -24,17 +24,4 @@ const authToken = (req, res, next) => {
   });
 };
 
-/*
- //Here we should look for the registeredUser in DB to obtain the data.
-
- const user = userManager.findUserIdentifiedAs(req.user)
-
- const token = generateToken({
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    });
-
-*/
-
-export { generateToken, authToken };
+export { generateToken, authToken, PRIVATE_KEY };

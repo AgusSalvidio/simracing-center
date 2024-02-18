@@ -1,5 +1,5 @@
 import passport from "passport";
-import localPassport from "passport-local";
+import passportJWT from "passport-jwt";
 import {
   ADMIN_EMAIL,
   ADMIN_PASS,
@@ -9,8 +9,7 @@ import { createHash, isValidPassword } from "../../utils/utils.js";
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { User } from "../main/User/User.js";
 import GithubStrategy from "passport-github2";
-
-const LocalStrategy = localPassport.Strategy;
+import { PRIVATE_KEY } from "../../utils/jwt.js";
 
 //Complete with your Github credentials
 const CLIENT_ID = "";
@@ -25,63 +24,36 @@ const ADMIN_USER = {
   password: ADMIN_PASS,
 };
 
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies["cookieToken"];
+  }
+  return token;
+};
+
 const initializePassport = () => {
   passport.use(
-    "register",
-    new LocalStrategy(
+    "jwt",
+    new JWTStrategy(
       {
-        passReqToCallback: true,
-        usernameField: "email",
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY,
       },
-      async (req, username, password, done) => {
-        const { firstName, lastName, email } = req.body;
+      async (jwt_payload, done) => {
         try {
-          const potentialUser = {
-            firstName,
-            lastName,
-            email,
-            password: createHash(password),
-          };
-
-          const registeredUser = await userManager.addUser(potentialUser);
-          return done(null, registeredUser);
+          return done(null, jwt_payload);
         } catch (error) {
-          return done(null, false, req.flash("error", error.message));
+          return done(error);
         }
       }
     )
   );
 
-  passport.use(
-    "login",
-    new LocalStrategy(
-      {
-        passReqToCallback: true,
-        usernameField: "email",
-      },
-      async (req, username, password, done) => {
-        try {
-          if (username == ADMIN_EMAIL || password == ADMIN_PASS) {
-            const user = ADMIN_USER;
-            return done(null, user);
-          }
-
-          const user = await userManager.getUserByCredentials(username);
-          if (!isValidPassword(password, user.password)) {
-            return done(
-              null,
-              false,
-              req.flash("error", "Contraseña incorrecta")
-            );
-          }
-          return done(null, user);
-        } catch (error) {
-          return done(null, false, req.flash("error", error.message));
-        }
-      }
-    )
-  );
-
+  /*
   passport.use(
     "github",
     new GithubStrategy(
@@ -132,7 +104,7 @@ const initializePassport = () => {
       const user = await userManager.getUserById(id);
       return done(null, user);
     }
-  });
+  });*/
 };
 
 export { initializePassport };

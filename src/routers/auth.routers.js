@@ -6,71 +6,81 @@ import {
   ADMIN_ROLE,
 } from "../middleware/authentication.middleware.js";
 import { authToken } from "../../utils/jwt.js";
+import { passportCall } from "../middleware/passportCall.js";
+import { authorization } from "../middleware/authorization.middleware.js";
 
 const router = Router();
 
 router.get("/logout", (req, res) => {
-  req.session.destroy((error) => {
-    if (error)
-      return res.status(400).send({ status: "failed", payload: error.message });
-    return res
-      .status(200)
-      .send({ status: "success", payload: "Logout Successful" });
-  });
+  return res
+    .clearCookie("cookieToken")
+    .status(200)
+    .send({ status: "success", payload: "Logout Successful" });
 });
 
-router.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/api/auth/loginFail" }),
-  async (req, res) => {
-    if (!req.user)
-      return res
-        .status(401)
-        .send({ status: "failed", payload: "Contraseña incorrecta" });
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-    let role = "User";
+  if (email == ADMIN_EMAIL && passport == ADMIN_PASS) {
+    //TODO
+  }
 
-    if (req.user.email == ADMIN_EMAIL || req.user.password == ADMIN_PASS) {
-      role = ADMIN_ROLE;
-    }
+  const user = await userManager.getUserByCredentials(email);
 
-    req.session.user = {
-      id: req.user._id,
-      email: req.user.email,
-      role: role,
+  if (!isValidPassword(password, user.password)) {
+    return res
+      .status(401)
+      .send({ status: "failed", payload: "Contraseña incorrecta" });
+  }
+
+  const token = generateToken({
+    id: user._id,
+    email: user.email,
+    role: user.role,
+  });
+
+  return res
+    .status(200)
+    .cookie("cookieToken", token, {
+      maxAge: 60 * 60 * 1000 * 24,
+      httpOnly: true,
+    })
+    .send({ status: "success", payload: "Login Successful" });
+});
+
+router.post("/register", async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+  try {
+    const potentialUser = {
+      firstName,
+      lastName,
+      email,
+      password: createHash(password),
     };
 
-    return res
-      .status(200)
-      .send({ status: "success", payload: "Login Successful" });
-  }
-);
+    await userManager.addUser(potentialUser);
 
-router.get("/loginFail", async (req, res) => {
-  return res
-    .status(400)
-    .send({ status: "failed", payload: req.flash("error") });
-});
-
-router.post(
-  "/register",
-  passport.authenticate("register", {
-    failureRedirect: "/api/auth/registerFail",
-  }),
-  async (req, res) => {
     return res
       .status(200)
       .send({ status: "success", payload: "Register Successful" });
+  } catch (error) {
+    throw error;
   }
-);
+});
 
-router.get("/registerFail", async (req, res) => {
+/*router.get("/loginFail", async (req, res) => {
   return res
     .status(400)
     .send({ status: "failed", payload: req.flash("error") });
-});
+});*/
 
-router.get(
+/*router.get("/registerFail", async (req, res) => {
+  return res
+    .status(400)
+    .send({ status: "failed", payload: req.flash("error") });
+});*/
+
+/*router.get(
   "/github",
   passport.authenticate("github", { scope: ["user:email"] }),
   async (req, res) => {}
@@ -87,10 +97,15 @@ router.get(
     };
     res.redirect("/products");
   }
-);
+);*/
 
-router.get("/current", authToken, async (req, res) => {
-  res.send({ status: "success", payload: req.user });
-});
+router.get(
+  "/current",
+  passportCall("jwt"),
+  authorization("ADMIN"),
+  async (req, res) => {
+    res.send({ status: "success", payload: req.user });
+  }
+);
 
 export default router;

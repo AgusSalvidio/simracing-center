@@ -27,7 +27,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use(cookieParser("ultraSecretCookieSign"));
+app.use(cookieParser());
 
 app.use(
   session({
@@ -44,7 +44,6 @@ app.use(
 app.use(flash());
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.engine(
   "hbs",
