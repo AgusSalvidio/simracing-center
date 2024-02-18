@@ -80,13 +80,8 @@ router.get(
   }
 );*/
 
-router.get(
-  "/current",
-  passportCall("jwt"),
-  authorization("ADMIN"),
-  async (req, res) => {
-    res.send({ status: "success", payload: req.user });
-  }
-);
+router.get("/current", passportCall("jwt"), async (req, res) => {
+  res.send({ status: "success", payload: req.user });
+});
 
 export default router;
