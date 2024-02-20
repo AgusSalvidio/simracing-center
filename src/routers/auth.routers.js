@@ -29,6 +29,7 @@ router.post("/login", async (req, res) => {
     id: user._id,
     email: user.email,
     role: user.role,
+    cartID: user.cart._id,
   });
 
   return res

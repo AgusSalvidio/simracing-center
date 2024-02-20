@@ -1,35 +1,4 @@
-let currentCartID = sessionStorage.getItem("currentCartID");
-
-if (!currentCartID) {
-  Swal.fire({
-    title: "Bienvenido a productos!",
-    text: `Se creará un nuevo carrito que se guardará en el sessionStorage! En él, podrás agregar los productos.`,
-    icon: "info",
-    confirmButtonColor: "#b61212",
-    preConfirm: async () => {
-      try {
-        const response = await fetch(`/api/carts`, {
-          method: "POST",
-        });
-        if (!response.ok) {
-          throw new Error("Error al agregar producto al carrito");
-        }
-        const jsonResponse = await response.json();
-        currentCartID = jsonResponse.cartID;
-        sessionStorage.setItem("currentCartID", currentCartID);
-        Swal.fire({
-          title: `El ID del carrito es: ${currentCartID} `,
-          icon: "success",
-          confirmButtonColor: "#b61212",
-        });
-      } catch (error) {
-        throw error;
-      }
-    },
-  });
-}
-
-const addProduct = (aProductID) => {
+const addProduct = (aProductID, aCartID) => {
   Swal.fire({
     title: "¿Seguro que desea agregar el producto al carrito?",
     icon: "warning",
@@ -40,7 +9,7 @@ const addProduct = (aProductID) => {
     preConfirm: async () => {
       try {
         const response = await fetch(
-          `/api/carts/${currentCartID}/product/${aProductID}`,
+          `/api/carts/${aCartID}/product/${aProductID}`,
           {
             method: "POST",
           }

@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import {
+  productManager,
+  userManager,
+} from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { passportCall } from "../middleware/passportCall.js";
 
 const router = Router();
