@@ -1,25 +1,9 @@
 const socket = io();
 
-let userEmail;
-
-Swal.fire({
-  title: "Identifícate",
-  input: "text",
-  text: "Ingresá el email para identificarte en el chat",
-  confirmButtonText: "Ingresar",
-  confirmButtonColor: "#b61212",
-  inputValidator: (value) => {
-    return !value && "Necesitas ingresar el email de usuario para continuar.";
-  },
-  allowOutsideClick: false,
-}).then((result) => {
-  userEmail = result.value;
-});
-
-const chatBox = document.querySelector("#chatBox");
-
-chatBox.addEventListener("keyup", (evt) => {
+function handleKeyUp(evt, userEmail) {
   if (evt.key === "Enter") {
+    console.log(evt);
+    const chatBox = document.querySelector("#chatBox");
     if (chatBox.value.trim().length > 0) {
       socket.emit("addMessageEvent", {
         userEmail,
@@ -29,7 +13,7 @@ chatBox.addEventListener("keyup", (evt) => {
       chatBox.value = "";
     }
   }
-});
+}
 
 const formatDate = (timestamp) => {
   const date = new Date(parseInt(timestamp, 10));
