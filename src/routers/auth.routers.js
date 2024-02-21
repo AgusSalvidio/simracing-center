@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { passportCall } from "../middleware/passportCall.js";
-import { authorization } from "../middleware/authorization.middleware.js";
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
 import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { generateToken } from "../../utils/jwt.js";
+import passport from "passport";
 
 const router = Router();
 
@@ -62,7 +62,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-/*router.get(
+router.get(
   "/github",
   passport.authenticate("github", { scope: ["user:email"] }),
   async (req, res) => {}
@@ -70,16 +70,24 @@ router.post("/register", async (req, res) => {
 
 router.get(
   "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "/loginFail" }),
+  passport.authenticate("github", { failureRedirect: "auth-fail" }),
   async (req, res) => {
-    req.session.user = {
+    const token = generateToken({
       id: req.user._id,
       email: req.user.email,
-      role: "User",
-    };
-    res.redirect("/products");
+      role: req.user.role,
+      cartID: req.user.cart._id,
+    });
+
+    res
+      .status(200)
+      .cookie("cookieToken", token, {
+        maxAge: 60 * 60 * 1000 * 24,
+        httpOnly: true,
+      })
+      .redirect("/products");
   }
-);*/
+);
 
 router.get("/current", passportCall("jwt"), async (req, res) => {
   res.send({ status: "success", payload: req.user });

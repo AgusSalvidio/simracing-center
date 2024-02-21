@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import GithubStrategy from "passport-github2";
 import { config } from "./config.js";
+import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 
 const CLIENT_ID = config.CLIENT_ID;
 const CLIENT_SECRET = config.CLIENT_SECRET;
@@ -19,6 +20,21 @@ const cookieExtractor = (req) => {
   return token;
 };
 
+/*Actually, we should save the birthdate not the age, but to comply with the this delivery,
+it stays like this. In future deliveries this will be changed. Also for Github login, if the 
+birthdate its not provided, then it will be setted with the account creation date. -asalvidio
+*/
+const calculateAge = (profile) => {
+  if (profile.birthdate) {
+    const birthdate = new Date(profile.birthdate);
+    const ageDiff = Date.now() - birthdate.getTime();
+    const ageDate = new Date(ageDiff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  } else {
+    return 100; //Handled the age when birthdate its not provided -asalvidio
+  }
+};
+
 const initializePassport = () => {
   passport.use(
     "jwt",
@@ -29,7 +45,6 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
-          console.log(jwt_payload);
           return done(null, jwt_payload);
         } catch (error) {
           return done(error);
@@ -38,7 +53,6 @@ const initializePassport = () => {
     )
   );
 
-  /*
   passport.use(
     "github",
     new GithubStrategy(
@@ -63,6 +77,7 @@ const initializePassport = () => {
                 firstName: profile._json.name,
                 lastName: profile._json.name,
                 email: profile._json.email,
+                age: calculateAge(profile._json),
                 password: "",
               };
               const addedUser = await userManager.addUser(newUser);
@@ -82,14 +97,9 @@ const initializePassport = () => {
     done(null, user._id);
   });
   passport.deserializeUser(async (id, done) => {
-    //Check if its the hardcoded user
-    if (id == ADMIN_USER._id) {
-      return done(null, ADMIN_USER);
-    } else {
-      const user = await userManager.getUserById(id);
-      return done(null, user);
-    }
-  });*/
+    const user = await userManager.getUserById(id);
+    return done(null, user);
+  });
 };
 
 export { initializePassport };

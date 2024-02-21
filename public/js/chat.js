@@ -2,7 +2,6 @@ const socket = io();
 
 function handleKeyUp(evt, userEmail) {
   if (evt.key === "Enter") {
-    console.log(evt);
     const chatBox = document.querySelector("#chatBox");
     if (chatBox.value.trim().length > 0) {
       socket.emit("addMessageEvent", {
