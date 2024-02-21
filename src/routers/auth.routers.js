@@ -70,7 +70,7 @@ router.get(
 
 router.get(
   "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "auth-fail" }),
+  passport.authenticate("github", { failureRedirect: "authFail" }),
   async (req, res) => {
     const token = generateToken({
       id: req.user._id,
