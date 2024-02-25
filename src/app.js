@@ -14,6 +14,7 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import flash from "express-flash";
+import cors from "cors";
 
 const app = express();
 const PORT = config.PORT;
@@ -24,6 +25,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(cors());
 app.use(cookieParser());
 
 app.use(
