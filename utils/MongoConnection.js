@@ -1,19 +1,16 @@
 import { connect } from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 class MongoConnection {
   static #instance;
-  constructor() {
-    connect(process.env.DB_URI);
+  constructor(DB_URI) {
+    connect(DB_URI);
   }
-  static getInstance() {
+  static getInstance(DB_URI) {
     if (this.#instance) {
       console.log("DB connection already exists");
       return this.#instance;
     }
-    this.#instance = new MongoConnection();
+    this.#instance = new MongoConnection(DB_URI);
     console.log("DB connection successful");
     return this.#instance;
   }

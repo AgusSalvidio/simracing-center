@@ -14,7 +14,7 @@ const config = {
 
 const connectDB = async () => {
   try {
-    await MongoConnection.getInstance();
+    await MongoConnection.getInstance(config.DB_URI);
   } catch (error) {
     console.log(error);
   }
