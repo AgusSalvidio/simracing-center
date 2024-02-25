@@ -37,6 +37,7 @@
                       class="form-control message-input"
                       name="chatBox"
                       placeholder="Ingresar mensaje, presionar enter para enviar"
+                      onkeyup="handleKeyUp(event, '{{user.email}}')"
                     ></textarea>
                   </div>
                 </div>

@@ -1,7 +1,18 @@
 import { connect } from "mongoose";
+import dotenv from "dotenv";
 
-const DB_URI =
-  "mongodb+srv://admin:admin@simracingcenter.vwo5g63.mongodb.net/ecommerce?retryWrites=true&w=majority";
+dotenv.config();
+
+const config = {
+  PORT: process.env.PORT || 8080,
+  DB_URI: process.env.DB_URI,
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
+  CALLBACK_URL: process.env.CALLBACK_URL,
+};
+
+const DB_URI = config.DB_URI;
 
 const connectDB = async () => {
   try {
@@ -12,4 +23,4 @@ const connectDB = async () => {
   }
 };
 
-export { connectDB, DB_URI };
+export { connectDB, config };

@@ -1,15 +1,19 @@
 import { User } from "../../../main/User/User.js";
 import userModel from "../../models/user.model.js";
 import { mongoose } from "mongoose";
+import { cartManager } from "../ManagerSystem/ManagerSystem.js";
 
 export class UserManagerDBBased {
   async initializeUser(aPotentialUser) {
-    const { firstName, lastName, email, password } = aPotentialUser;
+    const { firstName, lastName, age, email, password } = aPotentialUser;
     try {
+      const { _id: id } = await cartManager.addCart();
       return new User({
         id: null, //Made this way to later when recreating the object, set db ID. -asalvidio
         firstName: firstName,
         lastName: lastName,
+        age: age,
+        cart: id,
         email: email,
         password: password,
       });
@@ -18,8 +22,9 @@ export class UserManagerDBBased {
     }
   }
   assertSatisfiesAllUserRequiredParameters = (aPotentialUser) => {
-    const { firstName, lastName, email } = aPotentialUser;
-    if (!firstName || !lastName || !email) throw new Error("Faltan parámetros");
+    const { firstName, lastName, age, email } = aPotentialUser;
+    if (!firstName || !lastName || !age || !email)
+      throw new Error("Faltan parámetros");
   };
 
   async addUser(aPotentialUser) {

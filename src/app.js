@@ -1,15 +1,10 @@
 import express from "express";
-import productRouter from "./routers/products.routers.js";
-import productViewRouter from "./routers/productsView.routers.js";
-import cartViewRouter from "./routers/cartsView.routers.js";
-import cartRouter from "./routers/carts.routers.js";
-import chatRouter from "./routers/chatView.routers.js";
-import authRouter from "./routers/auth.routers.js";
+import appRouter from "./routers/app.routers.js";
 import __dirname from "../utils.js";
 import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
-import { connectDB, DB_URI } from "./config/config.js";
+import { config, connectDB } from "./config/config.js";
 import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import cookieParser from "cookie-parser";
@@ -21,13 +16,15 @@ import { initializePassport } from "./config/passport.config.js";
 import flash from "express-flash";
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = config.PORT;
+const DB_URI = config.DB_URI;
+
 connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use(cookieParser("ultraSecretCookieSign"));
+app.use(cookieParser());
 
 app.use(
   session({
@@ -44,7 +41,6 @@ app.use(
 app.use(flash());
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.engine(
   "hbs",
@@ -64,7 +60,7 @@ app.engine(
         return date.toLocaleString();
       },
       shouldRenderNavbar: (routeName) => {
-        const restrictedRoutes = ["Inicio de Sesión", "Registrate"];
+        const restrictedRoutes = ["Inicio de Sesión", "Registrate", "Error"];
         return !restrictedRoutes.includes(routeName);
       },
       navBar: () => {
@@ -82,12 +78,7 @@ app.engine(
 app.set("view engine", "hbs");
 app.set("views", __dirname + "/views");
 
-app.use("/", productViewRouter);
-app.use("/carts", cartViewRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
-app.use("/chat", chatRouter);
+app.use(appRouter);
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
