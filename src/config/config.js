@@ -1,5 +1,5 @@
-import { connect } from "mongoose";
 import dotenv from "dotenv";
+import MongoConnection from "../../utils/MongoConnection.js";
 
 dotenv.config();
 
@@ -12,12 +12,9 @@ const config = {
   CALLBACK_URL: process.env.CALLBACK_URL,
 };
 
-const DB_URI = config.DB_URI;
-
 const connectDB = async () => {
   try {
-    await connect(DB_URI);
-    console.log("DB connection successful");
+    await MongoConnection.getInstance();
   } catch (error) {
     console.log(error);
   }
