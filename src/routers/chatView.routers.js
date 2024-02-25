@@ -1,26 +1,10 @@
 import { Router } from "express";
-import { messageManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { passportCall } from "../middleware/passportCall.js";
+import ChatViewController from "../controllers/chatView.controller.js";
 
 const router = Router();
+const chatViewController = new ChatViewController();
 
-router.get("/", passportCall("jwt"), async (req, res) => {
-  try {
-    const messages = await messageManager.getMessagesSortedByTimestamp();
-    res.status(200).render("chat", {
-      title: "Chat en vivo",
-      user: req.user,
-      messages: messages,
-      style: "index.css",
-    });
-  } catch (error) {
-    return res.status(400).render("chat", {
-      title: "Chat en vivo",
-      user: req.user,
-      errorMessage: error.message,
-      style: "index.css",
-    });
-  }
-});
+router.get("/", passportCall("jwt"), chatViewController.showChat);
 
 export default router;
