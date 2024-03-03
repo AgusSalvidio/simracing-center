@@ -10,6 +10,9 @@ const config = {
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   CALLBACK_URL: process.env.CALLBACK_URL,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  ADMIN_PASS: process.env.ADMIN_PASS,
+  ADMIN_ROLE: process.env.ADMIN_ROLE,
 };
 
 const connectDB = async () => {

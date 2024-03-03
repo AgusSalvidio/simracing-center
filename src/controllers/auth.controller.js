@@ -1,6 +1,12 @@
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
-import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import {
+  cartManager,
+  userManager,
+} from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { generateToken } from "../../utils/jwt.js";
+import { config } from "../config/config.js";
+
+const { ADMIN_EMAIL, ADMIN_PASS, ADMIN_ROLE } = config;
 
 class AuthController {
   constructor() {
@@ -17,12 +23,31 @@ class AuthController {
   login = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await this.service.getUserByCredentials(email);
+    let user;
 
-    if (!isValidPassword(password, user.password)) {
-      return res
-        .status(401)
-        .send({ status: "failed", payload: "Contraseña incorrecta" });
+    if (email == ADMIN_EMAIL && password == ADMIN_PASS) {
+      const adminID = "11a111aa111111111aa11aaa";
+      let adminCart;
+      try {
+        adminCart = await cartManager.getCartById(adminID);
+      } catch (error) {
+        adminCart = await cartManager.addCustomCart(adminID, []);
+      }
+
+      user = {
+        _id: adminID,
+        email: ADMIN_EMAIL,
+        role: ADMIN_ROLE,
+        cart: adminCart,
+      };
+    } else {
+      user = await this.service.getUserByCredentials(email);
+
+      if (!isValidPassword(password, user.password)) {
+        return res
+          .status(401)
+          .send({ status: "failed", payload: "Contraseña incorrecta" });
+      }
     }
 
     const token = generateToken({
