@@ -24,6 +24,19 @@ export class CartManagerDBBased {
     }
   }
 
+  async addCustomCart(anID, aProductCollection) {
+    try {
+      const cart = new Cart({
+        id: null,
+        aProductCollection,
+      });
+      cart._id = new mongoose.Types.ObjectId(anID);
+      return cartModel.create(cart);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getProductsFrom(aCartID) {
     try {
       const cart = await this.getCartById(aCartID);
@@ -169,6 +182,15 @@ export class CartManagerDBBased {
       throw error;
     }
   }
+
+  async deleteCart(aCartID) {
+    try {
+      await cartModel.findOneAndDelete(aCartID);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteAllProductsOn(aCartID) {
     try {
       this.assertCartIdIsValid(aCartID);
