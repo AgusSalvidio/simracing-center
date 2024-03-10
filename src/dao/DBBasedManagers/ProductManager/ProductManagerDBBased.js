@@ -1,6 +1,6 @@
 import { mongoose } from "mongoose";
 import { Product } from "../../../main/Product/Product.js";
-import productModel from "../../models/product.model.js";
+import productModel from "../../DBBasedManagers/models/product.model.js";
 
 export class ProductManagerDBBased {
   assertSatisfiesAllRequiredParameters = ({

@@ -5,7 +5,6 @@ import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
 import { config, connectDB } from "./config/config.js";
-import messageModel from "./dao/models/message.model.js";
 import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -98,7 +97,7 @@ io.on("connection", (socket) => {
   console.log("Client connected!");
 
   socket.on("addMessageEvent", async (data) => {
-    messageModel.create(data);
+    messageManager.addMessage(data);
 
     const messages = await messageManager.getMessagesSortedByTimestamp();
 
