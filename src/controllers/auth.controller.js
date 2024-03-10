@@ -3,6 +3,7 @@ import { generateToken } from "../../utils/jwt.js";
 import { config } from "../config/config.js";
 import { userService } from "../repositories/index.js";
 import { cartService } from "../repositories/index.js";
+import UserDetails from "../dto/User/UserDetails.js";
 
 const { ADMIN_EMAIL, ADMIN_PASS, ADMIN_ROLE } = config;
 
@@ -109,7 +110,13 @@ class AuthController {
   };
 
   current = async (req, res) => {
-    res.send({ status: "success", payload: req.user });
+    const user = await this.service.getUserByCredentials(req.user.email);
+    const userDetails = new UserDetails({
+      fullName: `${user.firstName} ${user.lastName}`,
+      email: req.user.email,
+      cartID: req.user.cartID,
+    });
+    res.send({ status: "success", payload: userDetails });
   };
 }
 
