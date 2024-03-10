@@ -1,7 +1,7 @@
 import { Cart } from "../../../dto/Cart/Cart.js";
 import cartModel from "../../DBBasedManagers/models/cart.model.js";
 import { mongoose } from "mongoose";
-import { productManager } from "../ManagerSystem/ManagerSystem.js";
+import { productService } from "../../../repositories/index.js";
 
 export class CartManagerDBBased {
   async initializeCartUsing(products) {
@@ -73,7 +73,7 @@ export class CartManagerDBBased {
 
   parseProducts(aProductCollection) {
     const products = aProductCollection.map((product) => product.product);
-    return productManager.parseProducts(products);
+    return productService.parseProducts(products);
   }
 
   async getCartById(anId) {
@@ -106,7 +106,7 @@ export class CartManagerDBBased {
 
   async assertProductIDIsValid(aProductID) {
     try {
-      await productManager.getProductById(aProductID);
+      await productService.getProductById(aProductID);
     } catch (error) {
       throw error;
     }

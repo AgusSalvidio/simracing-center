@@ -3,63 +3,9 @@ import { Product } from "../../../dto/Product/Product.js";
 import productModel from "../../DBBasedManagers/models/product.model.js";
 
 export class ProductManagerDBBased {
-  assertSatisfiesAllRequiredParameters = ({
-    title,
-    description,
-    price,
-    code,
-    stock,
-    category,
-  }) => {
-    if (!title || !description || !price || !code || !stock || !category)
-      throw new Error("Faltan parámetros");
-  };
-
-  async assertProductCodeIsNotAlreadyStored(aCodeId) {
+  async addProduct(aProduct) {
     try {
-      const sameCodeId = (product) => product.code === aCodeId;
-      const products = await this.getProducts();
-      if (products.some(sameCodeId))
-        throw new Error(`Ya existe un producto con el código ${aCodeId}`);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async initializeProductUsing({
-    title,
-    description,
-    price,
-    code,
-    stock,
-    category,
-    thumbnails,
-  }) {
-    try {
-      return new Product({
-        id: null,
-        title,
-        description,
-        price,
-        code,
-        stock,
-        status: true,
-        category,
-        thumbnails,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  async addProduct(aPotentialProduct) {
-    try {
-      this.assertSatisfiesAllRequiredParameters(aPotentialProduct);
-      await this.assertProductCodeIsNotAlreadyStored(aPotentialProduct.code);
-
-      const product = await this.initializeProductUsing(aPotentialProduct);
-
-      productModel.create(product);
+      productModel.create(aProduct);
     } catch (error) {
       throw error;
     }
