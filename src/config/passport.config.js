@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import GithubStrategy from "passport-github2";
 import { config } from "./config.js";
-import { userManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { userService } from "../repositories/index.js";
 
 const CLIENT_ID = config.CLIENT_ID;
 const CLIENT_SECRET = config.CLIENT_SECRET;
@@ -64,7 +64,7 @@ const initializePassport = () => {
       async (accessToken, refreshToken, profile, done) => {
         try {
           try {
-            let user = await userManager.getUserByCredentials(
+            let user = await userService.getUserByCredentials(
               profile._json.email
             );
             return done(null, user);
@@ -80,7 +80,7 @@ const initializePassport = () => {
                 age: calculateAge(profile._json),
                 password: "",
               };
-              const addedUser = await userManager.addUser(newUser);
+              const addedUser = await userService.addUser(newUser);
               return done(null, addedUser);
             } else {
               throw error;
@@ -97,7 +97,7 @@ const initializePassport = () => {
     done(null, user._id);
   });
   passport.deserializeUser(async (id, done) => {
-    const user = await userManager.getUserById(id);
+    const user = await userService.getUserById(id);
     return done(null, user);
   });
 };

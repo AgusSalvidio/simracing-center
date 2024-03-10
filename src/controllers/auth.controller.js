@@ -1,16 +1,14 @@
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
-import {
-  cartManager,
-  userManager,
-} from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { cartManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { generateToken } from "../../utils/jwt.js";
 import { config } from "../config/config.js";
+import { userService } from "../repositories/index.js";
 
 const { ADMIN_EMAIL, ADMIN_PASS, ADMIN_ROLE } = config;
 
 class AuthController {
   constructor() {
-    this.service = userManager;
+    this.service = userService;
   }
 
   logout = (req, res) => {

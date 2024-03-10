@@ -1,44 +1,22 @@
-import { User } from "../../../dto/User/User.js";
 import userModel from "../../DBBasedManagers/models/user.model.js";
 import { mongoose } from "mongoose";
-import { cartManager } from "../ManagerSystem/ManagerSystem.js";
 
 export class UserManagerDBBased {
-  async initializeUser(aPotentialUser) {
-    const { firstName, lastName, age, email, password } = aPotentialUser;
-    try {
-      const { _id: id } = await cartManager.addCart();
-      return new User({
-        id: null, //Made this way to later when recreating the object, set db ID. -asalvidio
-        firstName: firstName,
-        lastName: lastName,
-        age: age,
-        cart: id,
-        email: email,
-        password: password,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-  assertSatisfiesAllUserRequiredParameters = (aPotentialUser) => {
-    const { firstName, lastName, age, email } = aPotentialUser;
-    if (!firstName || !lastName || !age || !email)
-      throw new Error("Faltan parámetros");
-  };
-
   async addUser(aPotentialUser) {
     try {
-      this.assertSatisfiesAllUserRequiredParameters(aPotentialUser);
+      return userModel.create(aPotentialUser);
+    } catch (error) {
+      throw error;
+    }
+  }
 
-      if (!(await this.hasUserAlreadyBeenAdded(aPotentialUser))) {
-        const user = await this.initializeUser(aPotentialUser);
-        return userModel.create(user);
-      } else {
-        throw new Error(
-          `Ya se encuentra registrado el email ${aPotentialUser.email}`
-        );
-      }
+  async hasUserAlreadyBeenAdded(aPotentialUser) {
+    try {
+      const { email } = aPotentialUser;
+      const user = await userModel.findOne({
+        email: email,
+      });
+      return !!user;
     } catch (error) {
       throw error;
     }
@@ -79,18 +57,6 @@ export class UserManagerDBBased {
     }
   }
 
-  async hasUserAlreadyBeenAdded(aPotentialUser) {
-    try {
-      const { email } = aPotentialUser;
-      const user = await userModel.findOne({
-        email: email,
-      });
-      return !!user;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getUserByCredentials(anEmail) {
     try {
       const user = await userModel.findOne({ email: anEmail }).lean();
@@ -100,12 +66,5 @@ export class UserManagerDBBased {
     } catch (error) {
       throw error;
     }
-  }
-
-  parseUsers(potentialUsers) {
-    const parsedUsers = potentialUsers.map(
-      (potentialUser) => new User(potentialUser)
-    );
-    return parsedUsers;
   }
 }
