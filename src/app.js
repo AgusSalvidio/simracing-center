@@ -64,6 +64,9 @@ app.engine(
         const restrictedRoutes = ["Inicio de Sesión", "Registrate", "Error"];
         return !restrictedRoutes.includes(routeName);
       },
+      hasAdminRole: (role) => {
+        return role == "ADMIN";
+      },
       navBar: () => {
         return configureTemplateCustomHelperFor("navBar");
       },
