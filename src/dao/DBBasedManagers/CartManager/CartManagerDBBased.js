@@ -1,4 +1,4 @@
-import { Cart } from "../../../main/Cart/Cart.js";
+import { Cart } from "../../../dto/Cart/Cart.js";
 import cartModel from "../../DBBasedManagers/models/cart.model.js";
 import { mongoose } from "mongoose";
 import { productManager } from "../ManagerSystem/ManagerSystem.js";

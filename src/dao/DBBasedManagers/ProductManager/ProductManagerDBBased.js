@@ -1,5 +1,5 @@
 import { mongoose } from "mongoose";
-import { Product } from "../../../main/Product/Product.js";
+import { Product } from "../../../dto/Product/Product.js";
 import productModel from "../../DBBasedManagers/models/product.model.js";
 
 export class ProductManagerDBBased {

@@ -1,4 +1,4 @@
-import { Message } from "../../../main/Message/Message.js";
+import { Message } from "../../../dto/Message/Message.js";
 import messageModel from "../../DBBasedManagers/models/message.model.js";
 
 export class MessageManagerDBBased {
