@@ -1,8 +1,8 @@
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
-import { cartManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { generateToken } from "../../utils/jwt.js";
 import { config } from "../config/config.js";
 import { userService } from "../repositories/index.js";
+import { cartService } from "../repositories/index.js";
 
 const { ADMIN_EMAIL, ADMIN_PASS, ADMIN_ROLE } = config;
 
@@ -27,9 +27,9 @@ class AuthController {
       const adminID = "11a111aa111111111aa11aaa";
       let adminCart;
       try {
-        adminCart = await cartManager.getCartById(adminID);
+        adminCart = await cartService.getCartById(adminID);
       } catch (error) {
-        adminCart = await cartManager.addCustomCart(adminID, []);
+        adminCart = await cartService.addCustomCart(adminID, []);
       }
 
       user = {

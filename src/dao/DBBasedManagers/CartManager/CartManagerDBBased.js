@@ -4,34 +4,9 @@ import { mongoose } from "mongoose";
 import { productService } from "../../../repositories/index.js";
 
 export class CartManagerDBBased {
-  async initializeCartUsing(products) {
+  async addCart(aCart) {
     try {
-      return new Cart({
-        id: null, //Made this way to later when recreating the object, set db ID. -asalvidio
-        products,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  async addCart() {
-    try {
-      const cart = await this.initializeCartUsing([]);
-      return cartModel.create(cart);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addCustomCart(anID, aProductCollection) {
-    try {
-      const cart = new Cart({
-        id: null,
-        aProductCollection,
-      });
-      cart._id = new mongoose.Types.ObjectId(anID);
-      return cartModel.create(cart);
+      return cartModel.create(aCart);
     } catch (error) {
       throw error;
     }

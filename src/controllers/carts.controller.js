@@ -1,8 +1,7 @@
-import { cartManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
-
+import { cartService } from "../repositories/index.js";
 class CartController {
   constructor() {
-    this.service = cartManager;
+    this.service = cartService;
   }
 
   addCart = async (req, res) => {
