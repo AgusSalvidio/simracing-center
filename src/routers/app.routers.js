@@ -5,6 +5,7 @@ import cartViewRouter from "./cartsView.routers.js";
 import cartRouter from "./carts.routers.js";
 import chatRouter from "./chatView.routers.js";
 import authRouter from "./auth.routers.js";
+import emailRouter from "./email.routers.js";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.use("/api/auth", authRouter);
 router.use("/api/products", productRouter);
 router.use("/api/carts", cartRouter);
 router.use("/chat", chatRouter);
+router.use("/email", emailRouter);
 router.get("*", (req, res) => {
   return res.status(404).render("authFail", {
     title: "Error",

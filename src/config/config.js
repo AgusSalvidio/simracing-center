@@ -13,6 +13,8 @@ const config = {
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASS: process.env.ADMIN_PASS,
   ADMIN_ROLE: process.env.ADMIN_ROLE,
+  GMAIL_APP_USER: process.env.GMAIL_APP_USER,
+  GMAIL_APP_PASS: process.env.GMAIL_APP_PASS,
 };
 
 const connectDB = async () => {
