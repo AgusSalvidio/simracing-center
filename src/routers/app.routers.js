@@ -6,6 +6,7 @@ import cartRouter from "./carts.routers.js";
 import chatRouter from "./chatView.routers.js";
 import authRouter from "./auth.routers.js";
 import emailRouter from "./email.routers.js";
+import smsRouter from "./sms.routers.js";
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use("/api/products", productRouter);
 router.use("/api/carts", cartRouter);
 router.use("/chat", chatRouter);
 router.use("/email", emailRouter);
+router.use("/sms", smsRouter);
 router.get("*", (req, res) => {
   return res.status(404).render("authFail", {
     title: "Error",

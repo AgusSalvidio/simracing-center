@@ -15,6 +15,9 @@ const config = {
   ADMIN_ROLE: process.env.ADMIN_ROLE,
   GMAIL_APP_USER: process.env.GMAIL_APP_USER,
   GMAIL_APP_PASS: process.env.GMAIL_APP_PASS,
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+  TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
 };
 
 const connectDB = async () => {
