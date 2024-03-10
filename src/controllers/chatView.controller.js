@@ -1,7 +1,8 @@
-import { messageManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { messageService } from "../repositories/index.js";
+
 class ChatViewController {
   constructor() {
-    this.service = messageManager;
+    this.service = messageService;
   }
   showChat = async (req, res) => {
     try {

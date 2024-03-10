@@ -39,12 +39,18 @@ class AuthController {
         cart: adminCart,
       };
     } else {
-      user = await this.service.getUserByCredentials(email);
+      try {
+        user = await this.service.getUserByCredentials(email);
 
-      if (!isValidPassword(password, user.password)) {
+        if (!isValidPassword(password, user.password)) {
+          return res
+            .status(401)
+            .send({ status: "failed", payload: "Contraseña incorrecta" });
+        }
+      } catch (error) {
         return res
           .status(401)
-          .send({ status: "failed", payload: "Contraseña incorrecta" });
+          .send({ status: "failed", payload: error.message });
       }
     }
 
