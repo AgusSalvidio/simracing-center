@@ -4,7 +4,7 @@ import ticketModel from "../models/ticket.model.js";
 export class TicketManagerDBBased {
   async addTicket(aPotentialTicket) {
     try {
-      await ticketModel.create(aPotentialTicket);
+      return await ticketModel.create(aPotentialTicket);
     } catch (error) {
       throw error;
     }

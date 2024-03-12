@@ -77,8 +77,16 @@ const completePurchase = async (aCartID) => {
     if (!response.ok) {
       throw new Error("Error al realizar compra");
     }
+    const ticket = (await response.json()).ticket;
     Swal.fire({
       title: "Compra realizada",
+      html: `
+      <div class="container px-4"> 
+        <p>ID Compra: ${ticket._id}</p>
+        <p>Fecha: ${ticket.purchaseDateTime}</p>
+        <p>Monto: $${ticket.amount}</p>
+        <p>Comprador: ${ticket.purchaser}</p>  
+      </div> `,
       icon: "success",
       confirmButtonColor: "#b61212",
       preConfirm: () => {

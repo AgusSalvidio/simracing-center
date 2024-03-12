@@ -33,10 +33,10 @@ class CartViewController {
       const { cid } = req.params;
       const cart = await this.service.getCartById(cid);
       const ticket = await ticketService.addTicketWith(cart, req.user.email);
-      console.log("El ticket es:", ticket);
       return res.status(200).send({
         status: "success",
         payload: `Se realizó la compra correctamente`,
+        ticket: ticket,
       });
     } catch (error) {
       return res.status(400).send({ status: "failed", payload: error.message });
