@@ -8,7 +8,6 @@ router.get("/:cid", cartController.getCartByID);
 
 router.post("/", cartController.addCart);
 router.post("/:cid/product/:pid", cartController.addProductToCart);
-router.post("/:cid/purchase", cartController.completePurchase);
 
 router.put("/:cid", cartController.updateCartWith);
 router.put("/:cid/products/:pid", cartController.updateProductsQuantity);

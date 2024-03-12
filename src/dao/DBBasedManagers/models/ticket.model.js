@@ -15,15 +15,6 @@ const ticketSchema = new Schema({
     type: String,
     required: true,
   },
-  products: {
-    type: [
-      {
-        id: Schema.Types.ObjectId,
-        name: String,
-        quantity: Number,
-      },
-    ],
-  },
 });
 
 export default model(collection, ticketSchema);

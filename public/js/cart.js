@@ -69,21 +69,24 @@ const cleanCartIdentifiedBy = (aCartID) => {
   });
 };
 
-const completePurchase = (aCartID) => {
-  Swal.fire({
-    title: "Compra realizada",
-    icon: "success",
-    confirmButtonColor: "#b61212",
-    confirmButtonText: "Aceptar",
-    preConfirm: async () => {
-      // try {
-    
-      // } catch (error) {
-      //   Swal.showValidationMessage(
-      //     `<i class="fa fa-info-circle"></i> ${error}`
-      //   );
-      //   console.log(error);
-      // }
-    },
-  });
+const completePurchase = async (aCartID) => {
+  try {
+    const response = await fetch(`${aCartID}/purchase`, {
+      method: "POST",
+    });
+    if (!response.ok) {
+      throw new Error("Error al realizar compra");
+    }
+    Swal.fire({
+      title: "Compra realizada",
+      icon: "success",
+      confirmButtonColor: "#b61212",
+      preConfirm: () => {
+        location.reload();
+      },
+    });
+  } catch (error) {
+    Swal.showValidationMessage(`<i class="fa fa-info-circle"></i> ${error}`);
+    console.log(error);
+  }
 };

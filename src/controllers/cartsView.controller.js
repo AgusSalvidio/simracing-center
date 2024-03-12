@@ -1,4 +1,4 @@
-import { cartService } from "../repositories/index.js";
+import { cartService, ticketService } from "../repositories/index.js";
 
 class CartViewController {
   constructor() {
@@ -25,6 +25,21 @@ class CartViewController {
         errorMessage: error.message,
         style: "../../css/index.css",
       });
+    }
+  };
+
+  completePurchase = async (req, res) => {
+    try {
+      const { cid } = req.params;
+      const cart = await this.service.getCartById(cid);
+      const ticket = await ticketService.addTicketWith(cart, req.user.email);
+      console.log("El ticket es:", ticket);
+      return res.status(200).send({
+        status: "success",
+        payload: `Se realizó la compra correctamente`,
+      });
+    } catch (error) {
+      return res.status(400).send({ status: "failed", payload: error.message });
     }
   };
 }

@@ -1,5 +1,4 @@
 import { cartService } from "../repositories/index.js";
-import { ticketService } from "../repositories/index.js";
 
 class CartController {
   constructor() {
@@ -92,21 +91,6 @@ class CartController {
       return res.status(200).send({
         status: "success",
         payload: `Se actualizó correctamente la cantidad de productos con ID ${pid} carrito con ID ${cid}`,
-      });
-    } catch (error) {
-      return res.status(400).send({ status: "failed", payload: error.message });
-    }
-  };
-
-  completePurchase = async (req, res) => {
-    try {
-      const { cid } = req.params;
-      const cart = await this.getCartByID(cid);
-      console.table(cart);
-      //const ticket = await this.ticketService.addTicket(cid,);
-      return res.status(200).send({
-        status: "success",
-        payload: `Se realizó la compra correctamente`,
       });
     } catch (error) {
       return res.status(400).send({ status: "failed", payload: error.message });

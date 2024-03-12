@@ -13,4 +13,11 @@ router.get(
   carViewController.showCart
 );
 
+router.post(
+  "/:cid/purchase",
+  passportCall("jwt"),
+  authorization(["USER"]),
+  carViewController.completePurchase
+);
+
 export default router;

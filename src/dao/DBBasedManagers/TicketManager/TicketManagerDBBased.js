@@ -1,5 +1,5 @@
 import { Ticket } from "../../../dto/Ticket/Ticket.js";
-import ticketModel from "../../DBBasedManagers/models/ticket.model.js";
+import ticketModel from "../models/ticket.model.js";
 
 export class TicketManagerDBBased {
   async addTicket(aPotentialTicket) {
