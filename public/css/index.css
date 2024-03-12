@@ -462,3 +462,12 @@ tr {
 .fa-github {
   color: #ffffff;
 }
+
+.cart-total {
+  border-left: 1px solid #212529;
+  padding: 0.25rem 1rem;
+  margin: 1rem 0;
+}
+.cart-total-detailed {
+  justify-content: space-between;
+}

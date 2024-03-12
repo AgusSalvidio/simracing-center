@@ -8,18 +8,20 @@ class CartViewController {
   showCart = async (req, res) => {
     try {
       const { cid } = req.params;
-      const { products } = await this.service.getCartById(cid);
+      const cart = await this.service.getCartById(cid);
       res.status(200).render("cart", {
         title: "Carrito",
-        session: req.user,
+        user: req.user,
         cartID: cid,
-        products: products,
+        products: cart.products,
+        totalAmount: cart.totalAmount(),
+        totalQuantity: cart.totalQuantity(),
         style: "../../css/index.css",
       });
     } catch (error) {
       return res.status(400).render("cart", {
         title: "Carrito",
-        session: req.user,
+        user: req.user,
         errorMessage: error.message,
         style: "../../css/index.css",
       });

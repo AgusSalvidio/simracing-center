@@ -69,4 +69,21 @@ const cleanCartIdentifiedBy = (aCartID) => {
   });
 };
 
-cleanCartIdentifiedBy;
+const completePurchase = (aCartID) => {
+  Swal.fire({
+    title: "Compra realizada",
+    icon: "success",
+    confirmButtonColor: "#b61212",
+    confirmButtonText: "Aceptar",
+    preConfirm: async () => {
+      // try {
+    
+      // } catch (error) {
+      //   Swal.showValidationMessage(
+      //     `<i class="fa fa-info-circle"></i> ${error}`
+      //   );
+      //   console.log(error);
+      // }
+    },
+  });
+};
