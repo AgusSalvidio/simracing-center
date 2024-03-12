@@ -109,4 +109,8 @@ export default class ProductRepository {
       console.error(error.message);
     }
   }
+
+  async updateProductStock(aProductID, anUpdatedStock) {
+    await this.dao.updateProductStock(aProductID, anUpdatedStock);
+  }
 }

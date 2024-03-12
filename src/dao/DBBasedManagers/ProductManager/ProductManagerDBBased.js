@@ -93,4 +93,11 @@ export class ProductManagerDBBased {
       console.error(error.message);
     }
   }
+
+  async updateProductStock(aProductID, anUpdatedStock) {
+    await productModel.updateOne(
+      { _id: aProductID },
+      { $set: { stock: anUpdatedStock } }
+    );
+  }
 }

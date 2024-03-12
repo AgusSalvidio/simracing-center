@@ -5,14 +5,27 @@ export default class TicketRepository {
     this.dao = ticketDao;
   }
 
-  async addTicketWith(aCart, aPurchaserEmail) {
+  totalAmountFor = (aProductCollection) => {
+    let totalAmount = 0;
+
+    aProductCollection.forEach((item) => {
+      const quantity = item.quantity;
+      const price = item.product.price;
+      totalAmount += quantity * price;
+    });
+
+    return totalAmount;
+  };
+
+  async addTicketWith(aProductCollection, aPurchaserEmail) {
+    const totalAmount = this.totalAmountFor(aProductCollection);
+
     try {
       const ticket = new Ticket({
         id: null, //Made this way to later when recreating the object, set db ID. -asalvidio
         code: null,
-        purchaseDateTime: new Date(),
         purchaser: aPurchaserEmail,
-        amount: aCart.totalAmount(),
+        amount: totalAmount,
       });
       return await this.dao.addTicket(ticket);
     } catch (error) {

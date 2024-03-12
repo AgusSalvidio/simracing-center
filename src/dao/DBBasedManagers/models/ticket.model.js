@@ -5,7 +5,7 @@ const collection = "tickets";
 const ticketSchema = new Schema({
   purchaseDateTime: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
   amount: {
     type: Number,

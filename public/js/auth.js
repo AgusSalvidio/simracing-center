@@ -30,7 +30,6 @@ const login = async () => {
         confirmButtonText: "OK",
         preConfirm: async () => {
           try {
-            console.log("La cookie es", document.cookie);
             window.location.href = "/products";
           } catch (error) {
             throw error;

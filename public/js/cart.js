@@ -69,32 +69,68 @@ const cleanCartIdentifiedBy = (aCartID) => {
   });
 };
 
+const successfulAlertFor = (aTicket) => {
+  const parsedDate = new Date(aTicket.purchaseDateTime).toLocaleString(
+    "es-AR",
+    {
+      timeZone: "America/Argentina/Buenos_Aires",
+    }
+  );
+
+  Swal.fire({
+    title: "Compra realizada",
+    html: `
+    <div class="container px-4"> 
+      <p>ID Compra: ${aTicket._id}</p>
+      <p>Fecha: ${parsedDate}</p>
+      <p>Monto: $${aTicket.amount}</p>
+      <p>Comprador: ${aTicket.purchaser}</p>  
+    </div> `,
+    icon: "success",
+    confirmButtonColor: "#b61212",
+    preConfirm: () => {
+      location.reload();
+    },
+  });
+};
+
 const completePurchase = async (aCartID) => {
   try {
     const response = await fetch(`${aCartID}/purchase`, {
       method: "POST",
     });
+    const responseContents = await response.json();
     if (!response.ok) {
-      throw new Error("Error al realizar compra");
+      if (responseContents.hasUnpurchasedProducts) {
+        Swal.fire({
+          title: "Error en la compra",
+          text: `No se pudo realizar la compra: ${responseContents.payload}`,
+          icon: "error",
+          confirmButtonColor: "#b61212",
+        });
+      } else {
+        throw new Error("Error al realizar compra");
+      }
+    } else {
+      if (responseContents.hasUnpurchasedProducts) {
+        Swal.fire({
+          title: "Compra Incompleta",
+          text: "No se pudo realizar la compra de algunos productos, los mismos quedarán en el carrito. Se generó el ticket para aquellos que tenian stock.",
+          icon: "warning",
+          confirmButtonColor: "#b61212",
+          preConfirm: () => {
+            successfulAlertFor(responseContents.ticket);
+          },
+        });
+      } else successfulAlertFor(responseContents.ticket);
     }
-    const ticket = (await response.json()).ticket;
-    Swal.fire({
-      title: "Compra realizada",
-      html: `
-      <div class="container px-4"> 
-        <p>ID Compra: ${ticket._id}</p>
-        <p>Fecha: ${ticket.purchaseDateTime}</p>
-        <p>Monto: $${ticket.amount}</p>
-        <p>Comprador: ${ticket.purchaser}</p>  
-      </div> `,
-      icon: "success",
-      confirmButtonColor: "#b61212",
-      preConfirm: () => {
-        location.reload();
-      },
-    });
   } catch (error) {
-    Swal.showValidationMessage(`<i class="fa fa-info-circle"></i> ${error}`);
+    Swal.fire({
+      title: "Error",
+      text: `${error}`,
+      icon: "error",
+      confirmButtonColor: "#b61212",
+    });
     console.log(error);
   }
 };
