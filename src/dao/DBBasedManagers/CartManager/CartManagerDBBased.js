@@ -1,37 +1,12 @@
-import { Cart } from "../../../main/Cart/Cart.js";
-import cartModel from "../../models/cart.model.js";
+import { Cart } from "../../../dto/Cart/Cart.js";
+import cartModel from "../../DBBasedManagers/models/cart.model.js";
 import { mongoose } from "mongoose";
-import { productManager } from "../ManagerSystem/ManagerSystem.js";
+import { productService } from "../../../repositories/index.js";
 
 export class CartManagerDBBased {
-  async initializeCartUsing(products) {
+  async addCart(aCart) {
     try {
-      return new Cart({
-        id: null, //Made this way to later when recreating the object, set db ID. -asalvidio
-        products,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  async addCart() {
-    try {
-      const cart = await this.initializeCartUsing([]);
-      return cartModel.create(cart);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addCustomCart(anID, aProductCollection) {
-    try {
-      const cart = new Cart({
-        id: null,
-        aProductCollection,
-      });
-      cart._id = new mongoose.Types.ObjectId(anID);
-      return cartModel.create(cart);
+      return cartModel.create(aCart);
     } catch (error) {
       throw error;
     }
@@ -73,14 +48,14 @@ export class CartManagerDBBased {
 
   parseProducts(aProductCollection) {
     const products = aProductCollection.map((product) => product.product);
-    return productManager.parseProducts(products);
+    return productService.parseProducts(products);
   }
 
   async getCartById(anId) {
     try {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
-      const cart = await cartModel.findOne({ _id: anId }).lean();
+      const cart = new Cart(await cartModel.findOne({ _id: anId }).lean());
       if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
       return cart;
     } catch (error) {
@@ -106,7 +81,7 @@ export class CartManagerDBBased {
 
   async assertProductIDIsValid(aProductID) {
     try {
-      await productManager.getProductById(aProductID);
+      await productService.getProductById(aProductID);
     } catch (error) {
       throw error;
     }

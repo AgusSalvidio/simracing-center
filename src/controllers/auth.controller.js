@@ -1,16 +1,15 @@
 import { createHash, isValidPassword } from "../../utils/bcrypt.js";
-import {
-  cartManager,
-  userManager,
-} from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
 import { generateToken } from "../../utils/jwt.js";
 import { config } from "../config/config.js";
+import { userService } from "../repositories/index.js";
+import { cartService } from "../repositories/index.js";
+import UserDetails from "../dto/User/UserDetails.js";
 
 const { ADMIN_EMAIL, ADMIN_PASS, ADMIN_ROLE } = config;
 
 class AuthController {
   constructor() {
-    this.service = userManager;
+    this.service = userService;
   }
 
   logout = (req, res) => {
@@ -29,9 +28,9 @@ class AuthController {
       const adminID = "11a111aa111111111aa11aaa";
       let adminCart;
       try {
-        adminCart = await cartManager.getCartById(adminID);
+        adminCart = await cartService.getCartById(adminID);
       } catch (error) {
-        adminCart = await cartManager.addCustomCart(adminID, []);
+        adminCart = await cartService.addCustomCart(adminID, []);
       }
 
       user = {
@@ -41,12 +40,18 @@ class AuthController {
         cart: adminCart,
       };
     } else {
-      user = await this.service.getUserByCredentials(email);
+      try {
+        user = await this.service.getUserByCredentials(email);
 
-      if (!isValidPassword(password, user.password)) {
+        if (!isValidPassword(password, user.password)) {
+          return res
+            .status(401)
+            .send({ status: "failed", payload: "Contraseña incorrecta" });
+        }
+      } catch (error) {
         return res
           .status(401)
-          .send({ status: "failed", payload: "Contraseña incorrecta" });
+          .send({ status: "failed", payload: error.message });
       }
     }
 
@@ -105,7 +110,13 @@ class AuthController {
   };
 
   current = async (req, res) => {
-    res.send({ status: "success", payload: req.user });
+    const user = await this.service.getUserByCredentials(req.user.email);
+    const userDetails = new UserDetails({
+      fullName: `${user.firstName} ${user.lastName}`,
+      email: req.user.email,
+      cartID: req.user.cartID,
+    });
+    res.send({ status: "success", payload: userDetails });
   };
 }
 

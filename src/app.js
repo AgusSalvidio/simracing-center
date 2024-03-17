@@ -5,8 +5,7 @@ import handlebars from "express-handlebars";
 import { readFileSync } from "node:fs";
 import { Server as ServerIO } from "socket.io";
 import { config, connectDB } from "./config/config.js";
-import messageModel from "./dao/models/message.model.js";
-import { messageManager } from "./dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { messageService } from "./repositories/index.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import FileStore from "session-file-store";
@@ -65,6 +64,9 @@ app.engine(
         const restrictedRoutes = ["Inicio de Sesión", "Registrate", "Error"];
         return !restrictedRoutes.includes(routeName);
       },
+      hasAdminRole: (role) => {
+        return role == "ADMIN";
+      },
       navBar: () => {
         return configureTemplateCustomHelperFor("navBar");
       },
@@ -98,9 +100,9 @@ io.on("connection", (socket) => {
   console.log("Client connected!");
 
   socket.on("addMessageEvent", async (data) => {
-    messageModel.create(data);
+    messageService.addMessage(data);
 
-    const messages = await messageManager.getMessagesSortedByTimestamp();
+    const messages = await messageService.getMessagesSortedByTimestamp();
 
     io.emit("updateMessagesBoxEvent", messages);
   });

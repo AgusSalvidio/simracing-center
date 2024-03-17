@@ -1,36 +1,10 @@
-import { Message } from "../../../main/Message/Message.js";
-import messageModel from "../../models/message.model.js";
+import { Message } from "../../../dto/Message/Message.js";
+import messageModel from "../../DBBasedManagers/models/message.model.js";
 
 export class MessageManagerDBBased {
-  assertSatisfiesAllRequiredParameters = ({
-    userEmail,
-    message,
-    timestamp,
-  }) => {
-    if (!userEmail || !message || !timestamp)
-      throw new Error("Faltan parámetros");
-  };
-
-  async initializeMessageUsing({ userEmail, message, timestamp }) {
-    try {
-      return new Message({
-        id: null,
-        userEmail,
-        message,
-        timestamp,
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
   async addMessage(aPotentialMessage) {
     try {
-      this.assertSatisfiesAllRequiredParameters(aPotentialMessage);
-
-      const message = await this.initializeMessageUsing(aPotentialMessage);
-
-      messageModel.create(message);
+      await messageModel.create(aPotentialMessage);
     } catch (error) {
       throw error;
     }

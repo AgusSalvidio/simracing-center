@@ -1,8 +1,8 @@
-import { productManager } from "../dao/DBBasedManagers/ManagerSystem/ManagerSystem.js";
+import { productService } from "../repositories/index.js";
 
 class ProductViewController {
   constructor() {
-    this.service = productManager;
+    this.service = productService;
   }
 
   showProducts = async (req, res) => {
