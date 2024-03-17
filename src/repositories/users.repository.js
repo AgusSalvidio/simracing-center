@@ -1,4 +1,7 @@
+import CustomError from "../../utils/errors/CustomError.js";
+import { generateUserErrorInfo } from "../../utils/errors/info.js";
 import { User } from "../dto/User/User.js";
+import { EErrors } from "../../utils/errors/enums.js";
 
 export default class UserRepository {
   constructor(userDao, cartDao) {
@@ -27,7 +30,12 @@ export default class UserRepository {
   assertSatisfiesAllUserRequiredParameters = (aPotentialUser) => {
     const { firstName, lastName, age, email } = aPotentialUser;
     if (!firstName || !lastName || !age || !email)
-      throw new Error("Faltan parámetros");
+      CustomError.createError({
+        name: "User creation failed",
+        cause: generateUserErrorInfo(aPotentialUser),
+        message: "Error creating the user",
+        code: EErrors.INSTANCE_CREATION_FAILED,
+      });
   };
 
   async addUser(aPotentialUser) {

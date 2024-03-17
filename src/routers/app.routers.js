@@ -8,10 +8,11 @@ import authRouter from "./auth.routers.js";
 import emailRouter from "./email.routers.js";
 import smsRouter from "./sms.routers.js";
 import testRouter from "./test.routers.js";
+import { errorHandler } from "../middleware/errors/index.js";
 
 const router = Router();
 
-router.use("/", productViewRouter);
+router.use("/", errorHandler, productViewRouter);
 router.use("/carts", cartViewRouter);
 router.use("/api/auth", authRouter);
 router.use("/api/products", productRouter);
