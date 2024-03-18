@@ -17,6 +17,12 @@ const generateProductErrorInfo = (product) => {
     ],
   };
 };
+const generateCartErrorInfo = () => {
+  return {
+    errorInfo: "One or more properties where incomplete or not valid.",
+    requiredProperties: "productID: has to be a UUID",
+  };
+};
 
 const generateObjectAlreadyIncludedErrorInfo = (anObjectID) => {
   return `An object already exists with the code ${anObjectID}`;
@@ -36,4 +42,5 @@ export {
   generateObjectAlreadyIncludedErrorInfo,
   generateObjectNotIncludedErrorInfo,
   generateInvalidTypeErrorInfo,
+  generateCartErrorInfo,
 };

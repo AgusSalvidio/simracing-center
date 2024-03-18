@@ -5,6 +5,7 @@ const {
   OBJECT_ALREADY_INCLUDED,
   OBJECT_NOT_INCLUDED,
   INVALID_TYPE_ERROR,
+  TRANSACTION_FAILED,
 } = EErrors;
 
 const errorHandler = (error, req, res, next) => {
@@ -20,6 +21,10 @@ const errorHandler = (error, req, res, next) => {
 
     case INVALID_TYPE_ERROR:
       return res.status(400).send({ status: "failed", payload: error });
+
+    case TRANSACTION_FAILED:
+      return res.status(500).send({ status: "failed", payload: error });
+
     default:
       return res.status(400).send({
         status: "failed",
