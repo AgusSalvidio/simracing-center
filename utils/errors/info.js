@@ -17,6 +17,17 @@ const generateProductErrorInfo = (product) => {
     ],
   };
 };
+const generateMessageErrorInfo = (potentialMessage) => {
+  return {
+    errorInfo: "One or more properties where incomplete or not valid.",
+    requiredProperties: [
+      `userEmail: has to be a string.   Received: ${potentialMessage.userEmail}`,
+      `message: has to be a string.     Received: ${potentialMessage.message}`,
+      `timestamp: has to be a datetime.   Received:${potentialMessage.timestamp}`,
+    ],
+  };
+};
+
 const generateCartErrorInfo = () => {
   return {
     errorInfo: "One or more properties where incomplete or not valid.",
@@ -43,4 +54,5 @@ export {
   generateObjectNotIncludedErrorInfo,
   generateInvalidTypeErrorInfo,
   generateCartErrorInfo,
+  generateMessageErrorInfo,
 };

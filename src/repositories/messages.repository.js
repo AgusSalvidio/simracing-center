@@ -1,17 +1,23 @@
 import { Message } from "../dto/Message/Message.js";
+import CustomError from "../../utils/errors/CustomError.js";
+import { generateMessageErrorInfo } from "../../utils/errors/info.js";
+import { EErrors } from "../../utils/errors/enums.js";
 
 export default class MessageRepository {
   constructor(messageDao) {
     this.dao = messageDao;
   }
 
-  assertSatisfiesAllRequiredParameters = ({
-    userEmail,
-    message,
-    timestamp,
-  }) => {
+  assertSatisfiesAllRequiredParameters = (aPotentialMessage) => {
+    const { userEmail, message, timestamp } = aPotentialMessage;
+
     if (!userEmail || !message || !timestamp)
-      throw new Error("Faltan parámetros");
+      CustomError.createError({
+        name: "Message creation failed",
+        cause: generateMessageErrorInfo(aPotentialProduct),
+        message: "Error creating the message",
+        code: EErrors.INSTANCE_CREATION_FAILED,
+      });
   };
 
   async initializeMessageUsing({ userEmail, message, timestamp }) {
@@ -23,7 +29,7 @@ export default class MessageRepository {
         timestamp,
       });
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -43,7 +49,7 @@ export default class MessageRepository {
     try {
       return await this.dao.getMessagesSortedByTimestamp();
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }

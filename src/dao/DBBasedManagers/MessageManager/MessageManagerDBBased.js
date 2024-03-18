@@ -16,7 +16,7 @@ export class MessageManagerDBBased {
       const parsedMessages = messages.map((message) => new Message(message));
       return parsedMessages;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -29,7 +29,7 @@ export class MessageManagerDBBased {
       );
       return sortedMessages;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }
