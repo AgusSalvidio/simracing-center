@@ -14,6 +14,7 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import flash from "express-flash";
 import cors from "cors";
+import { errorHandler } from "../src/middleware/errors/index.js";
 
 const app = express();
 const PORT = config.PORT;
@@ -83,6 +84,7 @@ app.set("view engine", "hbs");
 app.set("views", __dirname + "/views");
 
 app.use(appRouter);
+app.use(errorHandler);
 
 const httpServer = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

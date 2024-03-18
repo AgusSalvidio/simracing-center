@@ -1,6 +1,12 @@
 import { mongoose } from "mongoose";
 import { Product } from "../../../dto/Product/Product.js";
 import productModel from "../../DBBasedManagers/models/product.model.js";
+import CustomError from "../../../../utils/errors/CustomError.js";
+import {
+  generateObjectNotIncludedErrorInfo,
+  generateInvalidTypeErrorInfo,
+} from "../../../../utils/errors/info.js";
+import { EErrors } from "../../../../utils/errors/enums.js";
 
 export class ProductManagerDBBased {
   async addProduct(aProduct) {
@@ -19,7 +25,7 @@ export class ProductManagerDBBased {
       );
       return parsedProducts;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -38,14 +44,20 @@ export class ProductManagerDBBased {
       );
       return potentialProducts;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
   async assertHasProducts() {
     try {
       const products = await productModel.findOne({});
-      if (!products) throw new Error("No hay productos");
+      if (!products)
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: "No hay productos",
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
     } catch (error) {
       throw error;
     }
@@ -53,9 +65,12 @@ export class ProductManagerDBBased {
 
   assertProductIdIsValid(anId) {
     if (!mongoose.Types.ObjectId.isValid(anId))
-      throw new Error(
-        `El formato del ID ${anId} no cumple con el formato de UUID`
-      );
+      CustomError.createError({
+        name: "Invalid type error",
+        cause: generateInvalidTypeErrorInfo(),
+        message: `El formato del ID ${anId} no cumple con el formato de UUID`,
+        code: EErrors.INVALID_TYPE_ERROR,
+      });
   }
 
   async getProductById(anId) {
@@ -64,7 +79,12 @@ export class ProductManagerDBBased {
       this.assertProductIdIsValid(anId);
       const product = await productModel.findById(anId);
       if (!product)
-        throw new Error(`No se encuentra el producto con ID ${anId}`);
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encuentra el producto con ID ${anId}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       return product;
     } catch (error) {
       throw error;
@@ -76,7 +96,12 @@ export class ProductManagerDBBased {
       const productToDelete = await this.getProductById(anId);
       const result = await productModel.deleteOne({ _id: productToDelete.id });
       if (!result.deletedCount > 0) {
-        throw new Error(`No se encontró ningún producto con el ID ${anId}`);
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encontró ningún producto con el ID ${anId}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       }
     } catch (error) {
       throw error;
@@ -90,7 +115,7 @@ export class ProductManagerDBBased {
         anUpdatedProduct
       );
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 

@@ -65,7 +65,7 @@ class ProductController {
       return res.status(400).send({ status: "failed", payload: error.message });
     }
   };
-  addProduct = async (req, res) => {
+  addProduct = async (req, res, next) => {
     try {
       const potentialProduct = req.body;
       if (req.files && req.files.length > 0) {
@@ -95,7 +95,7 @@ class ProductController {
         payload: "Se agregó correctamente el producto",
       });
     } catch (error) {
-      return res.status(400).send({ status: "failed", payload: error.message });
+      next(error);
     }
   };
   deleteProduct = async (req, res) => {

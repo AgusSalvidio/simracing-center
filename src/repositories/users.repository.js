@@ -46,9 +46,11 @@ export default class UserRepository {
         const user = await this.initializeUser(aPotentialUser);
         return await this.dao.addUser(user);
       } else {
-        throw new Error(
-          `Ya se encuentra registrado el email ${aPotentialUser.email}`
-        );
+        CustomError.createError({
+          name: "Object already included",
+          message: `Ya se encuentra registrado el email ${aPotentialUser.email}`,
+          code: EErrors.OBJECT_ALREADY_INCLUDED,
+        });
       }
     } catch (error) {
       throw error;

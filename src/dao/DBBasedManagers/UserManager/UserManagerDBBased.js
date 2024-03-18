@@ -1,5 +1,11 @@
 import userModel from "../../DBBasedManagers/models/user.model.js";
 import { mongoose } from "mongoose";
+import CustomError from "../../../../utils/errors/CustomError.js";
+import {
+  generateObjectNotIncludedErrorInfo,
+  generateInvalidTypeErrorInfo,
+} from "../../../../utils/errors/info.js";
+import { EErrors } from "../../../../utils/errors/enums.js";
 
 export class UserManagerDBBased {
   async addUser(aPotentialUser) {
@@ -26,14 +32,20 @@ export class UserManagerDBBased {
     try {
       return await userModel.find({});
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
   async assertHasUsers() {
     try {
       const users = await userModel.findOne({});
-      if (!users) throw new Error("No hay usuarios");
+      if (!users)
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: "No hay usuarios",
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
     } catch (error) {
       throw error;
     }
@@ -41,16 +53,25 @@ export class UserManagerDBBased {
 
   assertUserIdIsValid(anId) {
     if (!mongoose.Types.ObjectId.isValid(anId))
-      throw new Error(
-        `El formato del ID ${anId} no cumple con el formato de UUID`
-      );
+      CustomError.createError({
+        name: "Invalid type error",
+        cause: generateInvalidTypeErrorInfo(),
+        message: `El formato del ID ${anId} no cumple con el formato de UUID`,
+        code: EErrors.INVALID_TYPE_ERROR,
+      });
   }
 
   async getUserById(anId) {
     try {
       this.assertUserIdIsValid(anId);
       const user = await userModel.findOne({ _id: anId }).lean();
-      if (!user) throw new Error(`No se encuentra el usuario con ID ${anId}`);
+      if (!user)
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encuentra el usuario con ID ${anId}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       return user;
     } catch (error) {
       throw error;
@@ -61,7 +82,12 @@ export class UserManagerDBBased {
     try {
       const user = await userModel.findOne({ email: anEmail }).lean();
       if (!user)
-        throw new Error(`No se encuentra el usuario con email ${anEmail}`);
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encuentra el usuario con email ${anEmail}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       return user;
     } catch (error) {
       throw error;
