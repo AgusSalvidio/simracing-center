@@ -1,20 +1,27 @@
 import { Product } from "../dto/Product/Product.js";
+import CustomError from "../../utils/errors/CustomError.js";
+import {
+  generateProductErrorInfo,
+  generateObjectAlreadyIncludedErrorInfo,
+} from "../../utils/errors/info.js";
+import { EErrors } from "../../utils/errors/enums.js";
 
 export default class ProductRepository {
   constructor(productDao) {
     this.dao = productDao;
   }
 
-  assertSatisfiesAllRequiredParameters = ({
-    title,
-    description,
-    price,
-    code,
-    stock,
-    category,
-  }) => {
+  assertSatisfiesAllRequiredParameters = (aPotentialProduct) => {
+    const { title, description, price, code, stock, category } =
+      aPotentialProduct;
+
     if (!title || !description || !price || !code || !stock || !category)
-      throw new Error("Faltan parámetros");
+      CustomError.createError({
+        name: "Product creation failed",
+        cause: generateProductErrorInfo(aPotentialProduct),
+        message: "Error creating the product",
+        code: EErrors.INSTANCE_CREATION_FAILED,
+      });
   };
 
   async assertProductCodeIsNotAlreadyStored(aCodeId) {
@@ -22,7 +29,12 @@ export default class ProductRepository {
       const sameCodeId = (product) => product.code === aCodeId;
       const products = await this.getProducts();
       if (products.some(sameCodeId))
-        throw new Error(`Ya existe un producto con el código ${aCodeId}`);
+        CustomError.createError({
+          name: "Object already included",
+          cause: generateObjectAlreadyIncludedErrorInfo(aCodeId),
+          message: `Ya existe un producto con el código ${aCodeId}`,
+          code: EErrors.OBJECT_ALREADY_INCLUDED,
+        });
     } catch (error) {
       throw error;
     }
@@ -50,7 +62,7 @@ export default class ProductRepository {
         thumbnails,
       });
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -70,7 +82,7 @@ export default class ProductRepository {
     try {
       return await this.dao.getProducts();
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -78,7 +90,7 @@ export default class ProductRepository {
     try {
       return await this.dao.getProductsFilteredBy(searchQuery, queryParams);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 

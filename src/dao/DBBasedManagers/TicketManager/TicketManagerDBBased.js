@@ -16,7 +16,7 @@ export class TicketManagerDBBased {
       const parsedTickets = tickets.map((ticket) => new Ticket(ticket));
       return parsedTickets;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }

@@ -3,19 +3,39 @@ import { faker } from "@faker-js/faker";
 
 const router = Router();
 
-const generateProducts = () => {
+const mockThumbnailURL = () => {
+  return faker.image.url();
+};
+
+const mockThumbnailURLs = (minAmount, maxAmount) => {
+  const amount =
+    Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
+
+  const urls = [];
+  for (let i = 0; i < amount; i++) {
+    const url = mockThumbnailURL();
+    urls.push(url);
+  }
+  return urls;
+
+  return;
+};
+
+const mockProduct = () => {
   return {
     id: faker.database.mongodbObjectId(),
     title: faker.commerce.productName(),
-    price: faker.commerce.price(),
-    department: faker.commerce.department(),
-    stock: parseInt(faker.string.numeric()),
     description: faker.commerce.productDescription(),
-    image: faker.image.url(),
+    price: faker.commerce.price(),
+    code: faker.commerce.isbn(),
+    stock: parseInt(faker.string.numeric()),
+    status: faker.datatype.boolean(),
+    category: faker.commerce.department(),
+    thumbnails: mockThumbnailURLs(2, 5),
   };
 };
 
-const generateUser = () => {
+const mockUser = () => {
   let productsQuantity = parseInt(
     faker.string.numeric(1, { bannedDigits: ["0"] })
   );
@@ -34,6 +54,14 @@ const generateUser = () => {
     products: mockedProducts,
   };
 };
+
+router.get("/", (req, res) => {
+  let mockedProducts = [];
+  for (let i = 0; i < 100; i++) {
+    mockedProducts.push(mockProduct());
+  }
+  res.send({ status: "successful", payload: mockedProducts });
+});
 
 router.get("/users", (req, res) => {
   let mockedUsers = [];

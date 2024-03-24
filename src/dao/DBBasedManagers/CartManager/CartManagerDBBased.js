@@ -2,6 +2,13 @@ import { Cart } from "../../../dto/Cart/Cart.js";
 import cartModel from "../../DBBasedManagers/models/cart.model.js";
 import { mongoose } from "mongoose";
 import { productService } from "../../../repositories/index.js";
+import CustomError from "../../../../utils/errors/CustomError.js";
+import {
+  generateObjectNotIncludedErrorInfo,
+  generateInvalidTypeErrorInfo,
+  generateCartErrorInfo,
+} from "../../../../utils/errors/info.js";
+import { EErrors } from "../../../../utils/errors/enums.js";
 
 export class CartManagerDBBased {
   async addCart(aCart) {
@@ -18,7 +25,7 @@ export class CartManagerDBBased {
       //Here you could show the real products by calling the ProductManager. -asalvidio
       return cart.products;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -26,14 +33,20 @@ export class CartManagerDBBased {
     try {
       return await cartModel.find({});
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
   async assertHasCarts() {
     try {
       const carts = await cartModel.findOne({});
-      if (!carts) throw new Error("No hay carritos");
+      if (!carts)
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: "No hay carritos",
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
     } catch (error) {
       throw error;
     }
@@ -41,9 +54,12 @@ export class CartManagerDBBased {
 
   assertCartIdIsValid(anId) {
     if (!mongoose.Types.ObjectId.isValid(anId))
-      throw new Error(
-        `El formato del ID ${anId} no cumple con el formato de UUID`
-      );
+      CustomError.createError({
+        name: "Invalid type error",
+        cause: generateInvalidTypeErrorInfo(),
+        message: `El formato del ID ${anId} no cumple con el formato de UUID`,
+        code: EErrors.INVALID_TYPE_ERROR,
+      });
   }
 
   parseProducts(aProductCollection) {
@@ -56,7 +72,13 @@ export class CartManagerDBBased {
       await this.assertHasCarts();
       this.assertCartIdIsValid(anId);
       const cart = new Cart(await cartModel.findOne({ _id: anId }).lean());
-      if (!cart) throw new Error(`No se encuentra el carrito con ID ${anId}`);
+      if (!cart)
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encuentra el carrito con ID ${anId}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       return cart;
     } catch (error) {
       throw error;
@@ -64,7 +86,13 @@ export class CartManagerDBBased {
   }
 
   assertSatisfiesAllProductRequiredParameters = (productID) => {
-    if (!productID) throw new Error("Faltan parámetros");
+    if (!productID)
+      CustomError.createError({
+        name: "Product adding failed",
+        cause: generateCartErrorInfo(),
+        message: "Error al agregar el producto al carrito",
+        code: EErrors.INSTANCE_CREATION_FAILED,
+      });
   };
 
   async hasProductAlreadyBeenAdded(aProductID, aCartID) {
@@ -96,9 +124,12 @@ export class CartManagerDBBased {
       if (foundProduct && foundProduct.products.length > 0) {
         return foundProduct.products[0];
       } else {
-        throw new Error(
-          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
-        );
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       }
     } catch (error) {
       throw error;
@@ -109,7 +140,12 @@ export class CartManagerDBBased {
     try {
       const cart = await cartModel.findById({ _id: aCartID });
       if (!cart)
-        throw new Error(`No se encuentra el carrito con ID ${aCartID}`);
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `No se encuentra el carrito con ID ${aCartID}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
     } catch (error) {
       throw error;
     }
@@ -146,12 +182,19 @@ export class CartManagerDBBased {
           { $pull: { products: { product: aProductID } } }
         );
         if (result.modifiedCount == 0) {
-          throw new Error(`Hubo un error al borrar el producto`);
+          CustomError.createError({
+            name: "Transaction failed",
+            message: "Hubo un error al borrar el producto",
+            code: EErrors.TRANSACTION_FAILED,
+          });
         }
       } else {
-        throw new Error(
-          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
-        );
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       }
     } catch (error) {
       throw error;
@@ -175,7 +218,11 @@ export class CartManagerDBBased {
         { $set: { products: [] } }
       );
       if (result.modifiedCount == 0) {
-        throw new Error(`Hubo un error al borrar todos los productos`);
+        CustomError.createError({
+          name: "Transaction failed",
+          message: "Hubo un error al borrar los productos",
+          code: EErrors.TRANSACTION_FAILED,
+        });
       }
     } catch (error) {
       throw error;
@@ -192,7 +239,11 @@ export class CartManagerDBBased {
         { $set: { products: products } }
       );
       if (result.modifiedCount == 0) {
-        throw new Error(`Hubo un error al actualizar el carrito`);
+        CustomError.createError({
+          name: "Transaction failed",
+          message: "Hubo un error al actualizar el carrito",
+          code: EErrors.TRANSACTION_FAILED,
+        });
       }
     } catch (error) {
       throw error;
@@ -210,14 +261,19 @@ export class CartManagerDBBased {
           { $set: { "products.$.quantity": potentialQuantity } }
         );
         if (result.modifiedCount == 0) {
-          throw new Error(
-            `Hubo un error al actualizar la cantidad del producto`
-          );
+          CustomError.createError({
+            name: "Transaction failed",
+            message: "Hubo un error al actualizar la cantidad del producto",
+            code: EErrors.TRANSACTION_FAILED,
+          });
         }
       } else {
-        throw new Error(
-          `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`
-        );
+        CustomError.createError({
+          name: "Object not found",
+          cause: generateObjectNotIncludedErrorInfo(),
+          message: `El carrito con ID ${aCartID} no tiene el producto con ID ${aProductID}`,
+          code: EErrors.OBJECT_NOT_INCLUDED,
+        });
       }
     } catch (error) {
       throw error;

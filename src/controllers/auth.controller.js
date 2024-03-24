@@ -71,7 +71,7 @@ class AuthController {
       .send({ status: "success", payload: "Login Successful" });
   };
 
-  register = async (req, res) => {
+  register = async (req, res, next) => {
     const { firstName, lastName, age, email, password } = req.body;
     try {
       const potentialUser = {
@@ -88,7 +88,7 @@ class AuthController {
         .status(200)
         .send({ status: "success", payload: "Register Successful" });
     } catch (error) {
-      throw error;
+      next(error);
     }
   };
 

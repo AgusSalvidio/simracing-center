@@ -7,7 +7,7 @@ import chatRouter from "./chatView.routers.js";
 import authRouter from "./auth.routers.js";
 import emailRouter from "./email.routers.js";
 import smsRouter from "./sms.routers.js";
-import testRouter from "./test.routers.js";
+import mockRouter from "./mock.routers.js";
 
 const router = Router();
 
@@ -19,7 +19,8 @@ router.use("/api/carts", cartRouter);
 router.use("/chat", chatRouter);
 router.use("/email", emailRouter);
 router.use("/sms", smsRouter);
-router.use("/test", testRouter);
+router.use("/test", mockRouter);
+router.use("/mockingproducts", mockRouter);
 router.get("*", (req, res) => {
   return res.status(404).render("authFail", {
     title: "Error",
